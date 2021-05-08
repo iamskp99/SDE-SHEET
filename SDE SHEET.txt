@@ -1,0 +1,2679 @@
+SDE Sheet (Striver)
+
+1 . Find the duplicate in an array of N+1 integers
+     TORTOISE AND HARE APPROACH
+
+ def findDuplicate(self, nums: List[int]) -> int:
+        i = nums[0]
+        j = nums[0]
+        f = 0
+        while f == 0:
+            i = nums[i]
+            j = nums[nums[j]]
+            if i == j:
+                f = 1
+            
+        c = i
+        s = nums[0]
+        while c != s:
+            c = nums[c]
+            s = nums[s]
+            
+        return c
+
+2 . Sort an array of 0’s 1’s 2’s without using extra space or sorting algo 
+
+def sortColors(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        
+        p0 = -1
+        p1 = -1
+        p2 = 0
+        while p2 < len(nums):
+            x = nums[p2]
+            if x == 0:
+                if p0 == p1:
+                    p0 += 1
+                    p1 += 1
+                    nums[p0],nums[p2] = nums[p2],nums[p0]
+                    
+                else:
+                    p0 += 1
+                    p1 += 1
+                    nums[p0] = 0
+                    if p2 > p1:
+                        nums[p1], nums[p2] = 1, nums[p1]
+
+                    else:
+                        nums[p1] = 1
+                
+                p2 = p2 + 1
+                continue
+                
+            if x == 1:
+                p1 += 1
+                if p2 > p1:
+                    nums[p1], nums[p2] = 1, nums[p1]
+
+                else:
+                    nums[p1] = 1
+                
+                p2 = p2 + 1
+                continue
+                
+            p2 = p2+1
+            
+        return
+
+3 . Find Missing And Repeating.
+
+#Equation approach
+def findTwoElement( self,arr, n): 
+        # code here
+        s = (n*(n+1))//2
+        s2 = (n*(n+1)*((2*n)+1))//6
+        som = 0
+        som2 = 0
+        for i in arr:
+            som += i
+            som2 += i**2
+        
+        d1 = s-som
+        d2 = s2-som2
+        e = d2//d1
+        m = e+d1
+        m = m//2
+        r = e-m
+        return [r,m]
+
+#XOR APPROACH
+    def findTwoElement( self,arr, n):
+        e1 = 0
+        for i in range(1,n+1):
+            e1 = e1^i
+        
+        e2 = 0
+        for i in arr:
+            e2  = e2^i
+            
+        e = e1^e2
+        be = bin(e)[2:]
+        be = be[::-1]
+        b1 = 0
+        b2 = 0
+        for i in arr:
+            c = bin(i)[2:]
+            c = c[::-1]
+            if len(c) < len(be):
+                b2 = b2^i
+                
+            else:
+                if c[len(be)-1] == "1":
+                    b1 = b1^i
+                    
+                else:
+                    b2 = b2^i
+                    
+        for i in range(1,n+1):
+            c = bin(i)[2:]
+            c = c[::-1]
+            if len(c) < len(be):
+                b2 = b2^i
+                
+            else:
+                if c[len(be)-1] == "1":
+                    b1 = b1^i
+                    
+                else:
+                    b2 = b2^i
+        
+        f = 0   
+        for i in arr:
+            if i == b1:
+                f = 1
+                break
+        
+        if f:
+            return [b1,b2]
+            
+        else:
+            return [b2,b1]
+
+
+
+4 . Merge Sorted Array
+
+#INSERTION SORT METHOD
+    #TIME COMPLEXITY O(N1*N2)
+    def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
+        """
+        Do not return anything, modify nums1 in-place instead.
+        """
+        
+        i = 0
+        j = 0
+        if len(nums2) == 0:
+            return
+        
+        while i < len(nums1)-len(nums2):
+            if nums1[i] > nums2[j]:
+                nums1[i],nums2[j] = nums2[j],nums1[i]
+                k = 0
+                while k < len(nums2)-1:
+                    if nums2[k] > nums2[k+1]:
+                        nums2[k],nums2[k+1] = nums2[k+1],nums2[k]
+                        
+                    else:
+                        break
+                        
+                    k = k+1
+            
+            
+            i = i+1
+            
+        cnt = 0
+        for i in range(len(nums1)-len(nums2),len(nums1)):
+            nums1[i] = nums2[cnt]
+            cnt += 1
+            
+        return
+
+#SHELL SORT METHOD
+    #TIME COMPLEXITY O(NLOGN)
+    def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
+        """
+        Do not return anything, modify nums1 in-place instead.
+        """
+        
+        cnt = 0
+        for i in range(len(nums1)-len(nums2),len(nums1)):
+            nums1[i] = nums2[cnt]
+            cnt += 1
+            
+        gap = math.ceil(len(nums1)/2)
+        f = 0
+        while f == 0:
+            for i in range(len(nums1)):
+                j = i+gap
+                if j >= len(nums1):
+                    break
+                    
+                if nums1[i] > nums1[j]:
+                    nums1[i],nums1[j] = nums1[j],nums1[i]
+                    
+            tg = gap
+            gap = math.ceil(gap/2)
+            if tg == 1:
+                f = 1
+            
+        return
+
+
+5 . Kadane's algorithm
+
+    def maxSubArray(self, A):
+        max_so_far = A[0]
+        cur_max = A[0]
+        for i in range(1,len(A)):
+            cur_max = max(A[i],cur_max+A[i])
+            max_so_far = max(max_so_far,cur_max)
+            
+        return max_so_far
+
+6 . Merge Intervals
+
+def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        intervals.sort()
+        if  len(intervals) == 1:
+            return intervals
+        
+        i = 0
+        m = intervals[i][1]
+        j = i+1
+        ans = []
+        f = 0
+        while j < len(intervals):
+            if intervals[j][0] <= m:
+                m = max(m,intervals[j][1])
+                j = j+1
+                
+            else:
+                ans.append([intervals[i][0],m])
+                i = j
+                m = intervals[i][1]
+                j = i+1
+                
+            
+        ans.append([intervals[i][0],m])
+        
+        
+        return ans
+
+7 . SET MATRIX ZEROES
+
+def setZeroes(self, matrix: List[List[int]]) -> None:
+        """
+        Do not return anything, modify matrix in-place instead.
+        """
+        
+        c = matrix[0][0]
+        for i in range(len(matrix)):
+            for j in range(len(matrix[i])):
+                if matrix[i][j] == 0:
+                    if j == 0:
+                        c = 0
+                        
+                    else:
+                        matrix[0][j] = 0
+                        
+                    matrix[i][0] = 0
+                    
+        
+        cd = 0
+        if matrix[0][0] == 0:
+            cd = 1
+            
+        for i in range(1,len(matrix)):
+            if matrix[i][0] == 0:
+                for j in range(len(matrix[i])):
+                    matrix[i][j] = 0
+                    
+        for i in range(len(matrix[0])):
+            if (i == 0 and c == 0) or (matrix[0][i] == 0 and i != 0):
+                for j in range(len(matrix)):
+                    matrix[j][i] = 0
+                    
+        if cd == 1:
+            for j in range(len(matrix[0])):
+                    matrix[0][j] = 0
+                    
+                    
+        return
+
+8 . Pascal's Triangle
+
+def generate(self, numRows: int) -> List[List[int]]:
+        n = numRows
+        if n == 0:
+            return []
+        
+        if n == 1:
+            return [[1]]
+        
+        if n == 2:
+            return [[1],[1,1]]
+        
+        l = [[1],[1,1]]
+        for i in range(3,n+1):
+            c = l[-1]
+            o = [1]
+            for j in range(len(c)-1):
+                o.append(c[j]+c[j+1])
+                
+            o.append(1)
+            l.append(o)
+            
+        return l
+
+
+#Also, Every entry in a line is value of a Binomial Coefficient. The value of ith entry in line number line is C(line, i).
+
+9. Next Permutation
+
+def nextPermutation(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        if len(nums) == 1:
+            return
+        
+        
+        f = 0
+        for i in range(len(nums)-1):
+            if nums[i] < nums[i+1]:
+                f = 1
+                break
+                
+                
+        if not f:
+            k = 0
+            b = len(nums)-1
+            while k < b:
+                nums[k],nums[b] = nums[b],nums[k]
+                b -= 1
+                k += 1
+            
+            return
+        
+        else:
+            i = len(nums)-2
+            while i > -1:
+                if nums[i] < nums[i+1]:
+                    j = len(nums)-1
+                    while j > i:
+                        if nums[j] > nums[i]:
+                            nums[i],nums[j] = nums[j],nums[i]
+                            k = i+1
+                            b = len(nums)-1
+                            while k < b:
+                                nums[k],nums[b] = nums[b],nums[k]
+                                b -= 1
+                                k += 1
+                                
+                            break
+                            
+                        j -= 1
+                        
+                    break
+                    
+                i -= 1
+                
+            return
+
+10 . Find Inverses
+
+long long int merge(long long int arr[],long long int l,long long int m,long long int r)
+{
+    long long int cnt = 0;
+    long long int n1 = m - l + 1;
+    long long int n2 = r - m;
+    long long int L[n1], R[n2];
+    for (int i = 0; i < n1; i++)
+        L[i] = arr[l + i];
+        
+    for (int j = 0; j < n2; j++)
+        R[j] = arr[m + 1 + j];
+ 
+    long long int i = 0;
+    long long int j = 0;
+    long long int k = l;
+ 
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) {
+            arr[k] = L[i];
+            i++;
+        }
+        else {
+            cnt = cnt+(n1-i);
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+    
+    while (i < n1) {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+    
+    while (j < n2) {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+    return cnt;
+}
+
+long long int mergeSort(long long int arr[],long long int l,long long int r){
+    if(l>=r){
+        return 0;
+    }
+    long long int m = (l+r-1)/2;
+    long long cnt,cnt1,cnt2;
+    cnt1 = mergeSort(arr,l,m);
+    cnt2 = mergeSort(arr,m+1,r);
+    cnt = cnt1+cnt2+merge(arr,l,m,r);
+    return cnt;
+}
+
+long long int inversionCount(long long int arr[], long long int N)
+{
+    long long int cnt;
+    cnt = mergeSort(arr,0,N-1);
+    return cnt;
+}
+
+11 . Best Time to Buy and Sell Stock
+
+ def maxProfit(self, prices: List[int]) -> int:
+        ans = 0
+        mi = 10**9
+        ma = 0
+        for i in prices:
+            mi = min(mi,i)
+            ans = max(ans,i-mi)
+            
+        return ans
+
+12 . Rotate Matrix
+
+def rotate(self, matrix: List[List[int]]) -> None:
+        """
+        Do not return anything, modify matrix in-place instead.
+        """
+        n = len(matrix)
+        for i in range(n):
+            for j in range(i,n):
+                matrix[i][j],matrix[j][i] = matrix[j][i],matrix[i][j]
+                
+        for i in range(n):
+            p1 = 0
+            p2 = n-1
+            while p1 < p2:
+                matrix[i][p1],matrix[i][p2] = matrix[i][p2],matrix[i][p1]
+                p1 += 1
+                p2 -= 1
+                
+        return
+
+13 . Search in a sorted 2D matrix
+
+def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
+        low = 0
+        mat = matrix
+        high = len(mat)-1
+        x = target
+        f = 0
+        while low <= high and f == 0:
+            mid = (low+high)//2
+            if mat[mid][0] > x:
+                high = mid-1
+                
+            else:
+                low1 = 0
+                high1 = len(mat[0])-1
+                while low1 <= high1 and f == 0:
+                    mid1 = (low1+high1)//2
+                    if mat[mid][mid1] == x:
+                        f = 1
+                        
+                    if mat[mid][mid1] < x:
+                        low1 = mid1+1
+		                
+                    if mat[mid][mid1] > x:
+                        high1 = mid1-1
+                        
+                        
+                if not f:
+                    low = mid+1
+                    
+        if f:
+            return 1
+        
+        return 0
+
+14 . Pow(x,n)
+
+def myPow(self, x: float, n: int) -> float:
+        if n >= 0:
+            ans = 1
+            while n > 0:
+                if n%2 == 1:
+                    ans = ans*x
+                
+                x = x*x
+                n = n//2
+            
+            return ans
+        
+        else:
+            ans = 1
+            p = 1/x
+            n = -1*n
+            while n > 0:
+                if n%2 == 1:
+                    ans = ans*p
+                    
+                p = p*p
+                n = n//2
+                
+            return ans
+
+15 . Majority element > n//2
+
+def majorityElement(self, nums: List[int]) -> int:
+        #The majority element always exist.
+        cnt = 0
+        e = 0
+        for i in nums:
+            if cnt == 0:
+                e = i
+                
+            if e == i:
+                cnt += 1
+                
+            if e != i:
+                cnt -= 1
+                
+        return e
+
+16 . Majority element > n//3
+
+#The intuition behind this algorithm is:
+For example let's say suppose the array has two majority elements.
+Then after the iteration the cnt of both should be left.
+
+Let's say we have only one majority element.
+Then also then one count will allways remain.
+
+def majorityElement(self, nums: List[int]) -> List[int]:
+        e1 = 10**18
+        e2 = 10**18
+        cnt1 = 0
+        cnt2 = 0
+        n = len(nums)
+        for i in nums:
+            if i == e1:
+                cnt1 += 1
+                
+            elif i == e2:
+                cnt2 += 1
+                
+            elif cnt1 == 0:
+                e1 = i
+                cnt1 = 1
+                
+            elif cnt2 == 0:
+                e2 = i
+                cnt2 = 1
+                
+            else:
+                cnt1 -= 1
+                cnt2 -= 1
+                
+        c1 = 0
+        c2 = 0
+        for i in nums:
+            if i == e1:
+                c1 += 1
+                
+            if i == e2:
+                c2 += 1
+            
+        l = []
+        if c1 > n//3:
+            l.append(e1)
+            
+        if c2 > n//3:
+            l.append(e2)
+            
+        return l
+
+17 . Grid Path
+
+#Combionatrics approach
+def uniquePaths(self, m: int, n: int) -> int:
+        return math.factorial(m+n-2)//(math.factorial(m-1)*math.factorial(n-1))
+
+18 . Reverse Pairs
+
+int merge(vector<int>& arr, int l, int m, int r)
+{
+    int cnt = 0;
+    int n1 = m - l + 1;
+    int n2 = r - m;
+    int L[n1], R[n2];
+    // cout << "_____________________\n";
+    for (int i = 0; i < n1; i++) {
+        L[i] = arr[l + i];
+        // cout << L[i] << "\n";
+
+    }
+    // cout << "HI1\n";
+    for (int j = 0; j < n2; j++) {
+        R[j] = arr[m + 1 + j];
+        // cout << R[j] << "\n";
+    }
+    // cout << "HI2\n";
+    int i = 0;
+    int j = 0;
+    while (i < n1) {
+        while (j < n2 && L[i] > (long long int)2 * R[j]) {
+            j = j + 1;
+        }
+        i = i + 1;
+        cnt = cnt + j;
+    }
+
+
+    // int i = 0;
+    // int j = 0;
+    i = 0;
+    j = 0;
+    int k = l;
+    while (i < n1 && j < n2) {
+        if (L[i] < R[j]) {
+            arr[k] = L[i];
+            i++;
+        }
+        else {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < n1) {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2) {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+    // cout << "cnt " << cnt << "\n";
+    return cnt;
+}
+
+int mergeSort(vector<int>& arr, int l, int r) {
+    if (l >= r) {
+        return 0;
+    }
+    int m = (l + r - 1) / 2;
+    int cnt, cnt1, cnt2;
+    cnt1 = mergeSort(arr, l, m);
+    cnt2 = mergeSort(arr, m + 1, r);
+    cnt = cnt1 + cnt2 + merge(arr, l, m, r);
+    return cnt;
+}
+
+int reversePairs(vector<int>& nums) {
+    int N, ans;
+    N = nums.size();
+    ans = mergeSort(nums, 0, N - 1);
+    return ans;
+}
+
+19 . 2 Sum
+
+def twoSum(self, nums: List[int], target: int) -> List[int]:
+        d = {}
+        f = -1
+        for i in range(len(nums)):
+            x = nums[i]
+            e = target-x
+            if e in d:
+                f = d[e]
+                break
+                
+            d[x] = i
+            
+        return [i,f]
+
+20 . 4 Sum
+
+def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
+        ans = []
+        n = len(nums)
+        nums.sort()
+        i = 0
+        while i < n:
+            j = i+1
+            while j < n:
+                l = j+1
+                r = n-1
+                x = target-(nums[i]+nums[j])
+                while l < r:
+                    if nums[l]+nums[r] < x:
+                        l = l+1
+                        
+                    elif nums[l]+nums[r] > x:
+                        r = r-1
+                        
+                    else:
+                        ans.append([nums[l],nums[r],nums[i],nums[j]])
+                        l = l+1
+                        while l < n and nums[l] == nums[l-1]:
+                            l = l+1
+                            
+                        r = r-1
+                        while r > -1 and nums[r] == nums[r+1]:
+                            r = r-1
+                
+                j = j+1
+                while j < n and nums[j] == nums[j-1]:
+                    j = j+1
+            
+            i = i+1
+            while i < n and nums[i] == nums[i-1]:
+                i = i+1
+                
+        return ans
+
+21 . Longest consecutive sequence
+
+def longestConsecutive(self, nums: List[int]) -> int:
+        d = {}
+        for i in nums:
+            if i in d:
+                d[i] += 1
+                
+            else:
+                d[i] = 1
+                
+        ans = 0
+        for i in nums:
+            if i-1 in d:
+                continue
+                
+            else:
+                cnt = 0
+                x = i
+                while x in d:
+                    x = x+1
+                    cnt += 1
+                    
+                x = x-1
+                ans = max(ans,cnt)
+                
+        return ans
+
+****************************************************
+#Sum of all sub arrays
+def SubArraySum(arr, n ): 
+    result = 0
+  
+    # computing sum of subarray  
+    # using formula 
+    for i in range(0, n): 
+        result += (arr[i] * (i+1) * (n-i)) 
+  
+    # return all subarray sum 
+    return result
+
+22 . Largest subarray with 0 sum
+
+def maxLen(n, arr):
+    d = {}
+    som = 0
+    ans = 0
+    for i in range(n):
+        som += arr[i]
+        if som == 0:
+            ans = max(ans,i+1)
+            
+        else:
+            if som in d:
+                e = d[som]
+                ans = max(ans,i-e)
+                
+            if som not in d:
+                d[som] = i
+                
+    return ans
+
+23 . Count number of subarrays with given xors
+
+def solve(self, A, B):
+        d = {0 : 1}
+        som = 0
+        ans = 0
+        for i in A:
+            som = som^i
+            x = som^B
+            if x in d:
+                ans += d[x]
+                
+            if som in d:
+                d[som] += 1
+                
+            else:
+                d[som] = 1
+                
+        return ans
+
+24 . Longest Substring Without Repeating Characters
+
+ def lengthOfLongestSubstring(self, s: str) -> int:
+        if len(s) == 0:
+            return 0
+        
+        d = {}
+        i = 0
+        j = 0
+        ans = 0
+        n = len(s)
+        while i < n and j < n:
+            # print(i,j)
+            # print(d)
+            x = s[j]
+            if x in d:
+                if d[x] == 0:
+                    d[x] += 1
+                    ans = max(ans,j-i+1)
+                    j = j+1
+                    
+                else:
+                    while i <= j and d[x] > 0:
+                        d[s[i]] -= 1
+                        i = i+1
+                        
+                    ans = max(ans,j-i+1)
+                    d[x] += 1
+                    j = j+1
+            
+            else:
+                d[x] = 1
+                ans = max(ans,j-i+1)
+                j = j+1
+            
+        return ans
+
+25 . Reverse a linked list
+#Iterative
+def reverseList(self, head: ListNode) -> ListNode:
+        prev = None
+        while head != None:
+            temp = head.next
+            head.next = prev
+            prev = head
+            head = temp
+            
+        return prev
+
+#Recursive
+def reverseList(self, head: ListNode) -> ListNode:
+        def rec(head):
+            if head == None:
+                return
+            
+            if head.next == None:
+                w[0] = head
+                return head
+            
+            else:
+                e = rec(head.next)
+                e.next = head
+                head.next = None
+                return head
+                
+        w = [head]        
+        rec(head)
+        return w[0]
+
+        
+        
+26. Middle of the Linked List
+
+#Tortoise and Hare approach
+def middleNode(self, head: ListNode) -> ListNode:
+        h1 = head
+        h2 = head
+        f = 0
+        while f == 0:
+            if h1.next == None:
+                f = 1
+                break
+            
+            if h1.next.next == None:
+                h2 = h2.next
+                f = 1
+                break
+                
+            h2 = h2.next
+            h1 = h1.next.next
+        
+        return h2
+
+27 . Merge two sorted linked list
+
+def mergeTwoLists(self, l1: ListNode, l2: ListNode) -> ListNode:
+        if l1 == None and l2 == None:
+            return None
+        
+        if l1 == None:
+            return l2
+        
+        if l2 == None:
+            return l1
+        
+        if l1.val <= l2.val:
+            t = l1.next
+            l1.next = None
+            h = l1
+            e = h
+            l1 = t
+            # h = h.next
+            
+        else:
+            t = l2.next
+            l2.next = None
+            h = l2
+            e = h
+            l2 = t
+            # h = h.next
+                
+        while l1 != None and l2 != None:
+            # print(h.val)
+            if l1.val <= l2.val:
+                t = l1.next
+                l1.next = None
+                h.next = l1
+                h = h.next
+                l1 = t
+                
+            else:
+                t = l2.next
+                l2.next = None
+                h.next = l2
+                l2 = t
+                h = h.next
+                
+        while l1 != None:
+            t = l1.next
+            l1.next = None
+            h.next = l1
+            h = h.next
+            l1 = t
+            
+        while l2 != None:
+            t = l2.next
+            l2.next = None
+            h.next = l2
+            l2 = t
+            h = h.next
+            
+        return e
+
+28 . Remove nth node from a linked list
+
+def removeNthFromEnd(self, head: ListNode, n: int) -> ListNode:
+        cnt = 0
+        h = head
+        while head != None:
+            head = head.next
+            cnt += 1
+            
+        e = cnt-n+1
+        if e == 1:
+            h = h.next
+            return h
+        
+        else:
+            r = h
+            cnt = 0
+            while cnt < e-2:
+                # print(h.val)
+                h = h.next
+                cnt += 1
+            
+            # print(h.val)
+            h.next = h.next.next
+            return r
+                
+def removeNthFromEnd(self, head: ListNode, n: int) -> ListNode:
+        #Optimised approach
+        start = ListNode()
+        start.next = head
+        s = start
+        f = start
+        print(s.val)
+        cnt = 1
+        while cnt <= n:
+            print(f.val)
+            f = f.next
+            cnt += 1
+        
+        if f.next == None:
+            return head.next
+            
+        while f.next != None:
+            s = s.next
+            f = f.next
+            
+        s.next = s.next.next
+        return head
+
+29 . Delete Node in a Linked List
+
+def deleteNode(self, node):
+        """
+        :type node: ListNode
+        :rtype: void Do not return anything, modify node in-place instead.
+        """
+        t = node.next.next
+        node.val = node.next.val
+        node.next = t
+        return
+
+30 . Add two numbers as linked list
+
+def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
+        r = 0
+        cnt = 0
+        head = ListNode()
+        h = head        
+        while l1 != None or l2 != None or r != 0:
+            x1 = 0
+            x2 = 0
+            cnt = cnt+1
+            if l1 != None:
+                x1 = l1.val
+                l1 = l1.next
+                
+            if l2 != None:
+                x2 = l2.val
+                l2 = l2.next
+                
+            head.val = r+x1+x2
+            if head.val >= 10:
+                head.val = head.val-10
+                r = 1
+                
+            else:
+                r = 0
+            
+            # print(head.val)
+            if l1 == None and l2 == None and r == 0:
+                head.next = None
+                break
+            
+            e = ListNode()
+            head.next = e
+            head = head.next
+        
+        return h
+
+31 . Intersection of Two Linked Lists
+
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
+        #Optimal Solution 1
+        h1 = headA
+        h2 = headB
+        cnt1 = 0
+        cnt2 = 0
+        while h1 != None:
+            h1 = h1.next
+            cnt1 += 1
+            
+        while h2 != None:
+            h2 = h2.next
+            cnt2 += 1
+            
+        h1 = headA
+        h2 = headB
+        cnt = abs(cnt1-cnt2)
+        if cnt1 >= cnt2:
+            e = 1
+            while e <= cnt:
+                h1 = h1.next
+                e = e+1
+            
+        else:
+            e = 1
+            while e <= cnt:
+                h2 = h2.next
+                e = e+1
+        
+        f = 0
+        while h1 != None and h2 != None:
+            if h1 == h2:
+                f = 1
+                break
+                
+            h1 = h1.next
+            h2 = h2.next
+            
+        if f:
+            return h1
+        
+        else:
+            return None
+
+def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
+        #Optimal Solution 2
+        if headA == None or headB == None:
+            return None
+        
+        a = headA
+        b = headB
+        while a != b:            
+            a = a.next
+            b = b.next
+            if a == None and b == None:
+                break
+            
+            if a == None:
+                a = headB
+                
+            if b == None:
+                b = headA
+                
+        return a
+
+
+32 . Linked List Cycle
+
+def hasCycle(self, head: ListNode) -> bool:
+        i = head
+        j = head
+        s = head
+        f = 0
+        g = 0
+        while f == 0:
+            if j == None or j.next == None:
+                g = 1
+                # f = 1
+                break
+            
+            i = i.next
+            j = j.next.next
+            if i == j:
+                f = 1
+            
+        if g:
+            return False
+        
+        return True
+
+33 . Reverse Nodes in k-Group
+
+    def reverseKGroup(self, head: ListNode, k: int) -> ListNode:
+        if head == None or k == 1:
+            return head
+        
+        cnt = 0
+        h = head
+        while h != None:
+            cnt += 1
+            h = h.next
+        
+        dummy = ListNode()
+        dummy.next = head
+        pre = dummy
+        nex = dummy
+        while cnt >= k:
+            cur = pre.next
+            nex = cur.next
+            for i in range(k-1):
+                cur.next = nex.next
+                nex.next = pre.next
+                pre.next = nex
+                nex = cur.next
+                
+            pre = cur
+            cnt -= k
+        
+        return dummy.next
+
+34 . Palindrome Linked List
+
+def isPalindrome(self, head: ListNode) -> bool:
+        if head == None:
+            return True
+        
+        s = head
+        f = head
+        h = head
+        g = 0
+        while g == 0:
+            if f.next == None:
+                g = 1
+                break
+                
+            if f.next.next == None:
+                g = 1
+                break
+                
+            f = f.next.next
+            s = s.next
+        
+        prev = s
+        s = s.next
+        prev.next = None
+        while s != None:
+            t = s.next
+            s.next = prev
+            prev = s
+            s = t
+            
+        p2 = prev
+        p1 = h
+        e1 = ListNode()
+        e2 = ListNode()
+        f = 1
+        while (p1 != p2) and (p2 != e1) and (p1 != e2):
+            if p1.val != p2.val:
+                f = 0
+                break
+            
+            e1 = p1
+            e2 = p2
+            p1 = p1.next
+            p2 = p2.next
+            
+        if f:
+            return True
+        
+        return False
+
+35 . Linked List Cycle II
+
+def detectCycle(self, head: ListNode) -> ListNode:
+        i = head
+        j = head
+        s = head
+        f = 0
+        g = 0
+        while f == 0:
+            if j == None or j.next == None:
+                g = 1
+                # f = 1
+                break
+            
+            i = i.next
+            j = j.next.next
+            if i == j:
+                f = 1
+            
+        if g:
+            return None
+        
+        c = i
+        while c != s:
+            c = c.next
+            s = s.next
+            
+        return s
+
+36 . Flattening a Linked List
+
+Node *merge(Node *a,Node *b)
+{
+    Node *temp = new Node(0);
+    Node *res = temp;
+    while(a != NULL && b != NULL){
+        if(a->data < b->data){
+            temp->bottom = a;
+            temp = temp->bottom;
+            a = a->bottom;
+        }
+        else{
+            temp->bottom = b;
+            temp=temp->bottom;
+            b = b->bottom;
+        }
+    }
+    if(a){
+        temp->bottom = a;
+    }
+    else{
+        temp->bottom = b;
+    }
+    return res->bottom;
+}
+    
+
+Node *flatten(Node *root)
+{
+   // Your code here
+   if(root == NULL ||NULL){
+       return root;
+   }
+   root->next = flatten(root->next);
+   root = merge(root,root->next);
+}
+
+37 . Rotate List
+
+def rotateRight(self, head: ListNode, k: int) -> ListNode:
+        if head == None:
+            return None
+        
+        s = head
+        f = head
+        cnt = 0
+        r = 0
+        h = head
+        while h != None:
+            h = h.next
+            r = r+1
+        
+        if r <= k:
+            k = k%r
+            
+        if k == 0:
+            return head
+            
+        while cnt < k:
+            f = f.next
+            cnt = cnt+1
+            
+        while f != None:
+            prev1 = s
+            s = s.next
+            prev2 = f
+            f = f.next
+            
+        top = head
+        prev1.next = None
+        head = s
+        prev2.next = top
+        return head        
+
+38 . Copy List with Random Pointer
+
+def copyRandomList(self, head: 'Node') -> 'Node':
+        if head == None:
+            return None
+        
+        h = head
+        r = head
+        while h != None:
+            nh = Node(0)
+            nh.val = h.val
+            nh.next = h.next
+            h.next = nh
+            h = nh.next
+            
+        h = head
+        while h != None:
+            r = h.random
+            n = h.next
+            if r == None:
+                n.random = None
+            
+            else:
+                n.random = r.next
+            
+            h = h.next.next
+            
+        cnt = 0
+        h = head
+        while h != None:
+            e1 = h.next
+            e2 = h.next.next
+            h.next = e2
+            # e1 = e2.next
+            if e2 == None:
+                e1.next = None
+                
+            else:
+                e1.next = e2.next
+                
+            if cnt == 0:
+                newhead = e1
+                cnt = 1
+                
+            h = e2
+            
+        return newhead
+
+39 . 3sum
+
+def threeSum(self, nums: List[int]) -> List[List[int]]:
+        #Optimal approach
+        nums.sort()
+        prev = -10**9
+        i = 0
+        s = set()
+        while i < len(nums):
+            x = -1*nums[i]
+            if x != prev:
+                l = i+1
+                r = len(nums)-1
+                while l < r:
+                    if nums[l]+nums[r] == x:
+                        s.add((-1*x,nums[l],nums[r]))
+                        l = l+1
+                        r = r-1
+                        continue
+                        
+                    if nums[l]+nums[r] > x:
+                        r = r-1
+                        
+                    else:
+                        l = l+1
+            
+            prev = nums[i]
+            i = i+1
+            
+        l = list(s)
+        return l
+
+40 . Trapping Rain Water
+
+def trap(self, height: List[int]) -> int:
+        #Optimal Approach
+        n = len(height)
+        l = 0
+        r = n-1
+        lmax = 0
+        rmax = 0
+        ans = 0
+        while l <= r:
+            if height[l] <= height[r]:
+                if height[l] < lmax:
+                    ans += (lmax-height[l])
+
+                else:
+                    lmax = height[l]
+                    
+                l = l+1
+                
+            else:
+                if height[r] < rmax:
+                    ans += (rmax-height[r])
+                    
+                else:
+                    rmax = height[r]
+                    
+                r = r-1
+                
+        return ans
+
+41 . Remove Duplicates from Sorted Array
+
+def removeDuplicates(self, nums: List[int]) -> int:
+        i = 0
+        j = 0
+        A = nums
+        while(i < len(A)):
+            A[j] = A[i]
+            while(i < len(A)-1 and A[i] == A[i+1]):
+                i = i+1
+                
+            j = j+1
+            i = i+1
+        
+        return j
+
+42 . Max Consecutive Ones
+
+def findMaxConsecutiveOnes(self, nums: List[int]) -> int:
+        c = 0
+        ans = 0
+        for i in nums:
+            if i == 0:
+                ans = max(ans,c)
+                c = 0
+                
+            else:
+                c += 1
+        
+        ans = max(ans,c)
+        return ans
+
+43 . N meetings in one room
+
+def maximumMeetings(n,start,end):
+    # code here
+    l = []
+    for i in range(n):
+        l.append((start[i],end[i]))
+        
+    l.sort(key=lambda x: x[1])
+    ans = 1
+    i = 0
+    j = i+1
+    # print(l)
+    while i < n and j < n:
+        if l[j][0] > l[i][1]:
+            i = j
+            j = i+1
+            ans += 1
+            
+        else:
+            j = j+1
+            
+    return ans
+
+44 . Minimum Platforms
+
+def minimumPlatform(n,arr,dep):
+    '''
+    :param n: number of activities
+    :param arr: arrival time of trains
+    :param dep: corresponding departure time of trains
+    :return: Integer, minimum number of platforms needed
+    '''
+    # code here
+    arr.sort()
+    dep.sort()
+    ans = 1
+    cnt = 0
+    i = 0
+    j = 0
+    a = len(arr)
+    d = len(dep)
+    while i < a and j < d:
+        if arr[i] <= dep[j]:
+            cnt += 1
+            i = i+1
+            
+        else:
+            cnt -= 1
+            j = j+1
+            
+        ans = max(ans,cnt)
+        
+    return ans
+
+45 . Job Sequencing Problem
+
+def JobScheduling(self,Jobs,n):
+        '''
+        :param Jobs: list of "Job" class defined in driver code, with "profit" and "deadline".
+        :param n: total number of jobs
+        :return: A list of size 2 having list[0] = count of jobs and list[1] = max profit
+        '''
+        '''
+        {
+            class Job:.
+            def __init__(self,profit=0,deadline=0):
+                self.profit = profit
+                self.deadline = deadline
+                self.id = 0
+        }
+        '''
+        # code here
+        Jobs.sort(key=lambda x: x.profit,reverse = True)
+        # print(Jobs[0].profit)
+        visited = set()
+        ans = 0
+        profit = 0
+        for i in Jobs:
+            time = i.deadline
+            cnt = i.profit
+            while time > 0:
+                if time not in visited and time <= n:
+                    ans += 1
+                    profit += cnt
+                    visited.add(time)
+                    break
+                
+                time -= 1
+                
+        return [ans,profit]
+
+46 . Fractional Knapsack
+
+def fractionalknapsack(self, W,Items,n):
+        '''
+        :param W: max weight which can be stored
+        :param Items: List contianing Item class objects as defined in driver code, with value and weight
+        :param n: size of Items
+        :return: Float value of max possible value, two decimal place accuracy is expected by driver code
+        
+        {
+            class Item:
+            def __init__(self,val,w):
+                self.value = val
+                self.weight = w
+        }
+        '''
+        # code here
+        arr = []
+        for i in Items:
+            arr.append((i.value/i.weight,i.value,i.weight))
+            
+        arr.sort(reverse = True)
+        ans = 0
+        v = 0
+        for i in arr:
+            if v+i[2] <= W:
+                ans += i[1]
+                v += i[2]
+                
+            else:
+                e = i[1]/i[2]
+                ans += (e*(W-v))
+                break
+            
+        return ans
+
+47 . Combination Sum
+
+class Solution:
+    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
+        def rec(i,l,target):
+            if i == len(candidates):
+                return
+            
+            som = sum(l)+candidates[i]
+            if som > target:
+                return
+            
+            if som == target:
+                ans.append(l+[candidates[i]])
+                return
+            
+            j = i
+            while(j < len(candidates)):
+                rec(j,l+[candidates[i]],target)
+                j = j+1
+                
+            return
+        
+        
+        ans = []
+        i = 0
+        while(i < len(candidates)):
+            rec(i,[],target)
+            i = i+1
+                
+        return ans
+
+48 . Combination Sum II
+
+def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
+        def rec(i,l,target):
+            if i == len(candidates):
+                return
+            
+            som = sum(l)+candidates[i]
+            if som > target:
+                return
+            
+            if som == target:
+                ans.append(l+[candidates[i]])
+                return
+            
+            j = i+1
+            prev = -1
+            while(j < len(candidates)):
+                if candidates[j] == prev:
+                    j = j+1
+                    continue
+                
+                rec(j,l+[candidates[i]],target)
+                prev = candidates[j]
+                j = j+1
+                
+            return
+        
+        
+        ans = []
+        candidates.sort()
+        i = 0
+        prev = -1
+        while(i < len(candidates)):
+            if candidates[i] == prev:
+                i = i+1
+                continue
+                
+            rec(i,[],target)
+            prev = candidates[i]
+            i = i+1
+                
+        return ans
+
+49 . Palindrome Partitioning
+
+def partition(self, s: str) -> List[List[str]]:
+        #Checks if a string is palindrome or not
+        def ispal(start,end):
+            i = start
+            j = end
+            f = 1
+            while i < j:
+                if s[i] != s[j]:
+                    f = 0
+                    break
+
+                i += 1
+                j -= 1
+
+            return  f
+        
+        def rec(index,path):
+            if index == len(s):
+                ans.append(path)
+                return
+            
+            else:
+                for i in range(index,len(s)):
+                    if ispal(index,i):
+                        rec(i+1,path+[s[index:i+1]])
+                        
+                return
+                
+        ans = []
+        path = []
+        rec(0,path)
+        return ans
+
+50 . Subset Sums
+
+class Solution:
+	def subsetSums(self, arr, N):
+		# code here
+		def rec(index,som,N):
+		    if index == N:
+		        ans.append(som)
+		        return
+		    
+		    else:
+		        som += arr[index]
+		        for i in range(index+1,N+1):
+		            rec(i,som,N)
+		            
+		        return
+		
+		
+		ans = []
+		for i in range(N):
+		    rec(i,0,N)
+		
+		ans.append(0)
+		ans.sort()
+		return ans
+        
+51 . Subset Sum-2
+
+52 . K-th permutation Sequence
+
+import math
+class Solution:
+    def getPermutation(self, n: int, k: int) -> str:
+        l = [i for i in range(1,n+1)]
+        ans = []
+        k = k-1
+        while True and len(l) != 0:
+            x = math.factorial(len(l))//len(l)
+            e = k//x
+            h = l[e]
+            ans.append(str(h))
+            k = k%x
+            o = []
+            for i in l:
+                if i != h:
+                    o.append(i)
+                    
+            l = o
+            
+        return "".join(ans)
+
+53 . N queens Problem 
+54 . Sudoko 
+55 . M coloring Problem (Graph prob) 
+56 . Rat in a Maze 
+57 . Print all Permutations of a string/array 
+58 . Word Break (print all ways)
+
+59 .  1/N-th root of an integer (use binary search) (square root, cube root, ..)
+
+def findRoot(x,n):
+    low = 0
+    high = x
+    cnt = 0
+    while low < high and cnt < 200:
+        mid = low+((high-low)/2)
+        if mid**n > x:
+            high = mid
+
+        else:
+            low = mid
+
+        cnt = cnt+1
+
+    return low
+
+60 . Median in a row-wise sorted Matrix
+
+from bisect import bisect_right
+
+class Solution:
+    def median(self, matrix, r, c):
+    	#code here 
+    	mi = 10**18
+    	ma = 0
+    	for i in range(r):
+    	    mi = min(mi,matrix[i][0])
+    	    ma = max(ma,matrix[i][-1])
+    	    
+    	desired = (r*c+1)//2
+    	while mi < ma:
+    	    mid = mi+((ma-mi)//2)
+    	    place = 0
+    	    for i in range(r):
+    	        j = bisect_right(matrix[i],mid)
+    	        place += j
+    	        
+    	    if place < desired:
+    	        mi = mid+1
+    	        
+    	    else:
+    	        ma = mid
+    	        
+    	return mi
+
+61 . Single Element in a Sorted Array
+
+class Solution:
+    def singleNonDuplicate(self, nums: List[int]) -> int:
+        ma = len(nums)-1
+        mi = 0
+        while mi < ma:
+            mid = (mi+ma)//2
+            flag = 0
+            if mid != mi:
+                if nums[mid] == nums[mid-1]:
+                    res = mid-1
+                    flag = 1
+                    
+                    
+            if mid != ma:
+                if nums[mid] == nums[mid+1]:
+                    res = mid
+                    flag = 1
+                    
+            if not flag:
+                return nums[mid]
+            
+            else:
+                diff = ma-res+1
+                if diff%2 == 0:
+                    ma = res-1
+                    
+                else:
+                    mi = res+2
+                    
+        return nums[(mi+ma)//2]
+
+62 . Search in Rotated Sorted Array
+
+from bisect import bisect
+class Solution:
+    def search(self, nums: List[int], target: int) -> int:
+        low = 0
+        high = len(nums)-1
+        while low < high:
+            mid = (low+high)//2
+            if nums[mid] > nums[high]:
+                low = mid+1
+                
+            else:
+                high = mid
+        
+        if high > 0:
+            x = bisect(nums,target,0,high)
+            if x > 0:
+                if nums[x-1] == target:
+                    return x-1
+        
+        if high < len(nums):
+            x = bisect(nums,target,high,len(nums))
+            if nums[x-1] == target:
+                return x-1
+        
+        return -1
+
+63 . Median of Two Sorted Arrays
+
+class Solution:
+    def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
+        if len(nums1) > len(nums2):
+            nums1,nums2 = nums2,nums1
+            
+        x = len(nums1)
+        y = len(nums2)
+        low = 0
+        high = x
+        while low <= high:
+            partitionX = (low+high)//2
+            partitionY = ((x+y+1)//2)-partitionX
+            if partitionX == 0:
+                maxLeftX = -1*(10**18)
+                
+            else:
+                maxLeftX = nums1[partitionX-1]
+            
+            if partitionX == x:
+                minRightX = 1*(10**18)
+                
+            else:
+                minRightX = nums1[partitionX]
+                
+            if partitionY == 0:
+                maxLeftY = -1*(10**18)
+                
+            else:
+                maxLeftY = nums2[partitionY-1]
+            
+            if partitionY == y:
+                minRightY = 1*(10**18)
+                
+            else:
+                minRightY = nums2[partitionY]
+                
+            if maxLeftX <= minRightY and maxLeftY <= minRightX:
+                if (x+y)%2 == 0:
+                    return (max(maxLeftX,maxLeftY)+min(minRightY,minRightX))/2
+                
+                else:
+                    return max(maxLeftX,maxLeftY)
+                
+            elif maxLeftX > minRightY:
+                high = partitionX-1
+                
+            else:
+                low = partitionX+1
+
+64 . K-th element of two sorted Arrays
+
+class Solution:
+    def kthElement(self,  arr1, arr2, n, m, k):
+        low = 0
+        high = max(arr1[-1],arr2[-1])
+        while low < high:
+            mid = (low+high)//2
+            cnt = 0
+            for x in arr1:
+                if x <= mid:
+                    cnt += 1
+                    
+            for x in arr2:
+                if x <= mid:
+                    cnt += 1
+            
+            
+            if cnt < k:
+                low = mid+1
+                
+            else:
+                high = mid
+                
+        return high
+
+65 . Check if a number if a power of 2 or not in O(1) 
+
+class Solution:
+    ##Complete this function
+    # Function to check if given number n is a power of two.
+    def isPowerofTwo(self,n):
+        ##Your code here
+        s = bin(n)[2:]
+        if s.count("1") == 1:
+            return True
+            
+        return False
+
+66 . Count total set bits
+
+class Solution:
+	def setBits(self, N):
+		# code here
+		s = bin(N)[2:]
+		return s.count("1")
+
+67 . Divide Integers without / operator 
+
+class Solution:
+    def divide(self, dividend: int, divisor: int) -> int:
+        cnt = 0
+        if dividend < 0:
+            dividend = -1*dividend
+            cnt += 1
+            
+        if divisor < 0:
+            divisor = -1*divisor
+            cnt += 1
+        
+        ans = 0
+        while True:
+            if dividend < divisor:
+                break
+                
+            else:
+                power = 33
+                while (2**power)*divisor > dividend:
+                    power -= 1
+                    
+                ans += 2**power
+                dividend -= (2**power)*divisor
+                
+        if cnt%2:
+            ans = -1*ans
+        
+        if ans >= 2**31:
+            return (2**31)-1
+        
+        return ans
+
+67 . Power Set 
+
+class Solution:
+	def AllPossibleStrings(self, s):
+		# Code here
+		ans = []
+		m = len(s)
+		for i in range(1,2**m):
+		    x = bin(i)[2:]
+		    rem = m-len(x)
+		    x = (rem*"0")+x
+		    c = ""
+		    for j in range(m):
+		        if x[j] == "1":
+		            c  = c+s[j]
+		            
+		    ans.append(c)
+		
+		ans.sort()    
+		return ans
+
+68 . Find square of a number without using multiplication or division operators. 
+
+
+##########################################################
+square(n) = 0 if n == 0
+  if n is even 
+     square(n) = 4*square(n/2) 
+  if n is odd
+     square(n) = 4*square(floor(n/2)) + 4*floor(n/2) + 1 
+
+Examples
+  square(6) = 4*square(3)
+  square(3) = 4*(square(1)) + 4*1 + 1 = 9
+  square(7) = 4*square(3) + 4*3 + 1 = 4*9 + 4*3 + 1 = 49
+How does this work? 
+
+If n is even, it can be written as
+  n = 2*x 
+  n2 = (2*x)2 = 4*x2
+If n is odd, it can be written as 
+  n = 2*x + 1
+  n2 = (2*x + 1)2 = 4*x2 + 4*x + 1
+
+#########################################################
+
+# Square of a number using bitwise
+# operators
+
+
+def square(n):
+
+	# Base case
+	if (n == 0):
+		return 0
+
+	# Handle negative number
+	if (n < 0):
+		n = -n
+
+	# Get floor(n/2) using
+	# right shift
+	x = n >> 1
+
+	# If n is odd
+	if (n & 1):
+		return ((square(x) << 2)
+				+ (x << 2) + 1)
+
+	# If n is even
+	else:
+		return (square(x) << 2)
+
+
+69 . Implement Stack / Implement Queue
+
+#Implement Queue
+def enque(val,n):
+    global p2
+    if queue[(p2+1)%n] != -1:
+        print("Queue Full")
+        return
+
+    p2 = (p2+1)%n
+    queue[p2] = val
+    return
+
+def deque():
+    global p1
+    if p1 == p2:
+        print("Queue is empty !")
+        return 0
+
+    p1 = (p1+1)%n
+    val = queue[p1]
+    queue[p1] = -1
+    return val
+
+p1 = -1
+p2 = -1
+n = int(input())
+queue = [-1]*n
+while True:
+    print(queue)
+    x = int(input())
+    if x == -1:
+        break
+
+    if x == 0:
+        print(deque())
+        continue
+
+    enque(x,n)
+
+70 . BFS
+
+from collections import deque
+def bfs(start,graph):
+    visited = {start}
+    explored = set()
+    levels = {start : 0}
+    queue = deque([])
+    queue.append(start)
+    while len(queue) > 0:
+        x = queue.popleft()
+        explored.add(x)
+        if x not in graph:
+            continue
+
+        for i in graph[x]:
+            if i not in visited:
+                visited.add(i)
+                queue.append(i)
+                levels[i] = levels[x]+1
+
+    return levels
+
+71 . Implement Stack using Queues
+
+from collections import deque
+#Push Costly
+
+class MyStack:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        
+        self.q1 = deque([])
+        self.q2 = deque([])
+        
+
+    def push(self, x: int) -> None:
+        """
+        Push element x onto stack.
+        """
+        self.q2.append(x)
+        while len(self.q1) > 0:
+            self.q2.append(self.q1.popleft())
+            
+        while len(self.q2) > 0:
+            self.q1.append(self.q2.popleft())
+        
+
+    def pop(self) -> int:
+        """
+        Removes the element on top of the stack and returns that element.
+        """
+            
+        if len(self.q1) == 0:
+            return None
+        
+        return self.q1.popleft()
+        
+
+    def top(self) -> int:
+        """
+        Get the top element.
+        """
+        
+        
+        if len(self.q1) == 0:
+            return None
+        
+
+        return self.q1[0]
+        
+
+    def empty(self) -> bool:
+        """
+        Returns whether the stack is empty.
+        """
+        
+        if len(self.q1) == 0:
+            return True
+        
+        return False
+        
+        
+
+
+# Your MyStack object will be instantiated and called as such:
+# obj = MyStack()
+# obj.push(x)
+# param_2 = obj.pop()
+# param_3 = obj.top()
+# param_4 = obj.empty()
+
+from collections import deque
+#Pop Costly
+
+class MyStack:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        
+        self.q1 = deque([])
+        self.q2 = deque([])
+        
+
+    def push(self, x: int) -> None:
+        """
+        Push element x onto stack.
+        """
+
+        self.q1.append(x)
+
+
+    def pop(self) -> int:
+        """
+        Removes the element on top of the stack and returns that element.
+        """
+            
+        if len(self.q1) == 0:
+            return None
+        
+        val = 0
+        while len(self.q1) > 0:
+            val = self.q1[0]
+            if len(self.q1) == 1:
+                self.q1.popleft()
+                continue
+            
+            self.q2.append(self.q1.popleft())
+            
+        while len(self.q2) > 0:
+            self.q1.append(self.q2.popleft())
+            
+            
+        return val
+
+    def top(self) -> int:
+        """
+        Get the top element.
+        """
+        if len(self.q1) == 0:
+            return None
+        
+        val = 0
+        while len(self.q1) > 0:
+            val = self.q1[0]
+            self.q2.append(self.q1.popleft())
+            
+        while len(self.q2) > 0:
+            self.q1.append(self.q2.popleft())
+            
+            
+        return val
+        
+
+        # return self.q1[0]
+        
+
+    def empty(self) -> bool:
+        """
+        Returns whether the stack is empty.
+        """
+        
+        if len(self.q1) == 0:
+            return True
+        
+        return False
+        
+        
+
+
+# Your MyStack object will be instantiated and called as such:
+# obj = MyStack()
+# obj.push(x)
+# param_2 = obj.pop()
+# param_3 = obj.top()
+# param_4 = obj.empty()
+
+72 . Implement Queue using Stacks
+
+class MyQueue:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.s1 = []
+        self.s2 = []
+        
+
+    def push(self, x: int) -> None:
+        """
+        Push element x to the back of queue.
+        """
+        self.s1.append(x)
+        
+
+    def pop(self) -> int:
+        """
+        Removes the element from in front of queue and returns that element.
+        """
+        while len(self.s1) > 0:
+            self.s2.append(self.s1.pop())
+            
+        val = self.s2.pop()
+        while len(self.s2) > 0:
+            self.s1.append(self.s2.pop())
+        
+        return val
+
+    def peek(self) -> int:
+        """
+        Get the front element.
+        """
+        while len(self.s1) > 0:
+            self.s2.append(self.s1.pop())
+            
+        val = self.s2[-1]
+        while len(self.s2) > 0:
+            self.s1.append(self.s2.pop())
+        
+        return val
+        
+
+    def empty(self) -> bool:
+        """
+        Returns whether the queue is empty.
+        """
+        if len(self.s1) == 0:
+            return True
+        
+        return False
+        
+
+
+# Your MyQueue object will be instantiated and called as such:
+# obj = MyQueue()
+# obj.push(x)
+# param_2 = obj.pop()
+# param_3 = obj.peek()
+# param_4 = obj.empty()
+
+73 . Next Greater Element
+
+class Solution:
+    
+    #Function to find the next greater element for each element of the array.
+    def nextLargerElement(self,arr,n):
+        #code here
+        stack = []
+        ans = [0]*n
+        for i in range(n):
+            if len(stack) == 0:
+                stack.append(i)
+                continue
+            
+            if arr[i] > arr[stack[-1]]:
+                while len(stack) > 0:
+                    if arr[i] <= arr[stack[-1]]:
+                        break
+                        
+                    x = stack.pop()
+                    ans[x] = arr[i]
+                    
+
+            stack.append(i)
+                
+        while len(stack) > 0:
+            x = stack.pop()
+            ans[x] = -1
+            
+        return ans
+                
+
+74 . LRUCache
+
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.hash = {}
+        self.cache = {}
+        self.hkey = -1
+        self.lkey = -1
+        self.capacity = capacity
+        
+
+    def get(self, key: int) -> int:
+        if key in self.hash:            
+            pr = self.cache[key][0]
+            if pr == -1:
+                return self.hash[key]
+            
+            ne = self.cache[key][1]
+            if ne == -1:
+                self.lkey = pr
+                
+            else:
+                self.cache[ne][0] = pr
+                
+            self.cache[pr][1] = ne
+            self.cache[key] = [-1,self.hkey]
+            self.cache[self.hkey][0] = key
+            self.hkey = key
+            return self.hash[key]
+        
+        return -1
+        
+
+    def put(self, key: int, value: int) -> None:
+        if key in self.cache:
+            self.hash[key] = value
+            pr = self.cache[key][0]
+            if pr != -1:
+                ne = self.cache[key][1]
+                if ne == -1:
+                    self.lkey = pr
+                    self.cache[pr][1] = -1
+                
+                else:
+                    self.cache[pr][1] = ne
+                    self.cache[ne][0] = pr
+                
+                self.cache[key] = [-1,self.hkey]
+                self.cache[self.hkey][0] = key
+                self.hkey = key
+            
+        else:
+            val = value
+            if len(self.cache) == 0:
+                self.cache[key] = [-1,-1]
+                self.hkey = key
+                self.lkey = key
+                self.hash[key] = val
+                
+            else:
+                if len(self.cache)+1 > self.capacity:
+                    pr = self.cache[self.lkey][0]
+                    if pr == -1:
+                        del self.cache[self.lkey]
+                        del self.hash[self.lkey]
+                        self.lkey = -1
+                        self.hkey = -1
+                        
+                    
+                    else:
+                        self.cache[pr][1] = -1
+                        del self.cache[self.lkey]
+                        del self.hash[self.lkey]
+                        self.lkey = pr
+                
+                if len(self.cache) == 0:
+                    self.cache[key] = [-1,-1]
+                    self.hkey = key
+                    self.lkey = key
+                    self.hash[key] = val
+                
+                else:
+                    self.cache[key] = [-1,-1]
+                    self.cache[key] = [-1,self.hkey]
+                    self.cache[self.hkey][0] = key
+                    self.hkey = key
+                    self.hash[key] = val
+
+75 . Largest rectangle in histogram 
+
+
+76 . Sliding Window maximum
+
+#Nlogn Solution
+import heapq
+class Solution:
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        i = 0
+        # l = nums
+        d = {}
+        c = {}
+        ans = []
+        ma = -1*(10**18)
+        h = []
+        heapq.heapify(h)
+        while i < k:
+            x = nums[i]
+            heapq.heappush(h,-1*x)
+            if x in d:
+                d[x] += 1
+                # c[x] += 1
+                
+            else:
+                d[x] = 1
+                # c[x] = 1
+            
+            ma = max(ma,x)
+            i = i+1
+            
+        ans.append(ma)
+        p1 = 0
+        p2 = i
+        while p2 < len(nums):
+            # print(h)
+            x1 = nums[p1]
+            x2 = nums[p2]
+            d[x1] -= 1
+            if x2 in d:
+                d[x2] += 1
+                
+            else:
+                d[x2] = 1
+                
+            heapq.heappush(h,-1*x2)
+            if x2 >= ma:
+                ma = x2
+                ans.append(ma)
+            
+            else:
+                if d[ma] == 0:
+                    while True:
+                        # print(h)
+                        ma = -1*heapq.heappop(h)
+                        if d[ma] > 0:
+                            heapq.heappush(h,-1*ma)
+                            break
+                                
+                    
+                    ans.append(ma)
+                    
+                else:
+                    ans.append(ma)
+            
+            p1 += 1
+            p2 += 1
+            
+        return ans
+        
+# Monotonic Queue Approach
+from collections import deque
+
+class Solution:
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        queue = deque([])
+        ans = []
+        l = 0
+        for r in range(len(nums)):
+            while len(queue) > 0:
+                if nums[queue[-1]] < nums[r]:
+                    queue.pop()
+                    
+                else:
+                    break
+                    
+            queue.append(r)
+            if l > queue[0]:
+                queue.popleft()
+                
+            if r+1 >= k:
+                ans.append(nums[queue[0]])
+                l += 1 
+            
+        return ans
+    
+77 . Implement MinStack
+
+#Two stack space optimized solution
+class MinStack:
+
+    def __init__(self):
+        """
+        initialize your data structure here.
+        """
+        self.stack = []
+        self.cache = []
+        
+
+    def push(self, val: int) -> None:
+        if len(self.stack) == 0:
+            self.stack.append(val)
+            self.cache.append([val,1])
+            
+        else:
+            if val > self.cache[-1][0]:
+                self.stack.append(val)
+                
+            else:
+                if val == self.stack[-1]:
+                    x = self.cache[-1][1]
+                    self.cache[-1][1] = x+1
+                    
+                else:
+                    self.cache.append([val,1])
+                    
+                self.stack.append(val)                
+                    
+
+    def pop(self) -> None:
+        if self.stack[-1] == self.cache[-1][0]:
+            self.stack.pop()
+            x = self.cache[-1][1] -1
+            if x == 0:
+                self.cache.pop()
+            
+            else:
+                self.cache[-1][1] = x
+        
+        else:
+            self.stack.pop()
+
+    def top(self) -> int:
+        return self.stack[-1]
+        
+
+    def getMin(self) -> int:
+        # print(self.stack)
+        # print(self.cache)
+        return self.cache[-1][0]
+
+
+# Your MinStack object will be instantiated and called as such:
+# obj = MinStack()
+# obj.push(val)
+# obj.pop()
+# param_3 = obj.top()
+# param_4 = obj.getMin()
+
+78 . Rotten Orange
