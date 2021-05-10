@@ -2519,6 +2519,40 @@ class LRUCache:
 
 75 . Largest rectangle in histogram 
 
+class Solution:
+    def largestRectangleArea(self, heights: List[int]) -> int:
+        stack = []
+        n = len(heights)
+        ans = 0
+        heights.append(0)
+        for i in range(n+1):
+            if len(stack) == 0:
+                ans = max(heights[i],ans)
+                stack.append(i)
+                continue
+                
+            if heights[i] >= heights[stack[-1]]:
+                stack.append(i)
+                continue
+                
+            while len(stack) > 0:
+                if heights[stack[-1]] > heights[i]:
+                    x = stack.pop()
+                    if len(stack) == 0:
+                        ans = max(ans,heights[x]*i)
+                        
+                    else:
+                        ans = max(ans,heights[x]*(i-stack[-1]-1))
+                        
+                    continue
+                    
+                break
+                
+            stack.append(i)
+                    
+        return ans
+        
+
 
 76 . Sliding Window maximum
 
@@ -2677,3 +2711,151 @@ class MinStack:
 # param_4 = obj.getMin()
 
 78 . Rotten Orange
+
+from collections import deque
+class Solution:
+    def orangesRotting(self, grid: List[List[int]]) -> int:
+        def bfs(graph,cnt,visited,queue,levels):
+            explored = set()
+            while queue:
+                node = queue.popleft()
+                explored.add(node)
+                if node not in graph:
+                    continue
+                
+                neighbours = graph[node]
+                for neighbour in neighbours:
+                    if neighbour not in visited:
+                        queue.append(neighbour)
+                        visited.add(neighbour)
+                        levels[neighbour]= levels[node]+1
+                    
+            
+            if cnt != len(explored):
+                return -1
+            
+            ans = 0
+            for i in levels:
+                ans = max(levels[i],ans)
+            
+            return ans
+        
+        graph = {}
+        cnt = 0
+        queue = deque([])
+        visited = set()
+        levels = {}
+        for i in range(len(grid)):
+            for j in range(len(grid[0])):
+                if grid[i][j] != 0:
+                    cnt += 1
+                    l = [(i-1,j),(i+1,j),(i,j-1),(i,j+1)]
+                    for k in l:
+                        if k[0] > -1 and k[0] < len(grid) and k[1] > -1 and k[1] < len(grid[0]):
+                            if grid[k[0]][k[1]] != 0:
+                                if (i,j) in graph:
+                                    graph[(i,j)].append(k)
+                                    
+                                else:
+                                    graph[(i,j)] = [k]
+                                    
+                if grid[i][j] == 2:
+                    queue.append((i,j))
+                    visited.add((i,j))
+                    levels[(i,j)] = 0
+        
+        # print(cnt)
+        return bfs(graph,cnt,visited,queue,levels)
+
+79 . Reverse Words in a String
+
+class Solution:
+    def reverseWords(self, s: str) -> str:
+        l = []
+        w = ""
+        flag = 0
+        for i in s:
+            if i == " ":
+                if flag:
+                    l.append(w)
+                    flag = 0
+                    w = ""
+                
+                continue
+            
+            w += i
+            flag = 1
+            
+        if flag:
+            l.append(w)
+            
+        i = 0
+        j = len(l)-1
+        while i < j:
+            l[i],l[j] = l[j],l[i]
+            i += 1
+            j -= 1
+            
+        return " ".join(l)
+
+80 . Longest Palindromic Substring
+
+class Solution:
+    def longestPalindrome(self, s: str) -> str:
+        ai = -1
+        aj = -1
+        ans = 0
+        n = len(s)
+        for i in range(n):
+            e1 = i
+            e2 = i
+            cnt = 0
+            while e1 > -1 and e2 < n:
+                if s[e1] == s[e2]:
+                    if e1 == e2:
+                        cnt += 1
+                        
+                    else:
+                        cnt += 2
+                        
+            
+                    
+                    e1 -= 1
+                    e2 += 1
+                    continue
+                
+                break
+                
+            if cnt > ans:
+                ans = cnt
+                ai = e1+1
+                aj = e2-1
+                
+            e1 = i
+            e2 = i+1
+            cnt = 0
+            while e1 > -1 and e2 < n:
+                if s[e1] == s[e2]:
+                    if e1 == e2:
+                        cnt += 1
+                        
+                    else:
+                        cnt += 2
+                        
+                    e1 -= 1
+                    e2 += 1
+                    continue
+                
+                break
+                
+            if cnt > ans:
+                ans = cnt
+                ai = e1+1
+                aj = e2-1
+                
+        p = []
+        for i in range(ai,aj+1):
+            p.append(s[i])
+            
+        return "".join(p)
+        
