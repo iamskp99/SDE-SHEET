@@ -2858,4 +2858,74 @@ class Solution:
             p.append(s[i])
             
         return "".join(p)
+
+81 . #Roman to integer
+
+class Solution:
+    def romanToInt(self, s: str) -> int:
+        d = {"I" : 1,"V" : 5,"X" : 10,"L" : 50,"C":100,"D":500,"M":1000}
+        ans = 0
+        cur = 0
+        s = s[::-1]
+        for i in s:
+            if d[i] >= cur:
+                cur = d[i]
+                ans += d[i]
+                
+            else:
+                ans -= d[i]
+                
+        return ans
         
+        
+# Integer to Roman
+class Solution:
+    def intToRoman(self, num: int) -> str:
+        d = {1000: 'M', 900: 'CM', 500: 'D', 400: 'CD', 100: 'C', 90: 'XC', 50: 'L', 40: 'XL', 10: 'X', 9: 'IX', 5: 'V', 4: 'IV', 1: 'I'}
+        l = [1000,900,500,400,100,90,50,40,10,9,5,4,1]
+        ans = []
+        x = num
+        i = 0
+        while x > 0:
+            if x >= l[i]:
+                x -= l[i]
+                ans.append(d[l[i]])
+                 
+                
+            else:
+                i += 1
+                
+            # print(ans)
+                
+        return "".join(ans)
+
+82 . Implement ATOI/STRSTR 
+
+83 . Longest Common Prefix
+
+class Solution:
+    def longestCommonPrefix(self, strs: List[str]) -> str:
+        ans = list(strs[0])
+        for i in range(1,len(strs)):
+            cur = []
+            x = strs[i]
+            for j in range(min(len(x),len(ans))):
+                if ans[j] == x[j]:
+                    cur.append(ans[j])
+                    continue
+                    
+                break
+                
+            ans = cur
+            
+        return "".join(ans)
+        
+84 . Rabin Karp
+
+85 . Prefix Function/Z-Function
+86 . KMP algo 
+87 . Minimum characters needed to be inserted in the beginning to make it palindromic. 
+88 . Check for Anagrams 
+89 . Count and Say 
+90 . Compare version numbers 
+
