@@ -2929,3 +2929,332 @@ class Solution:
 89 . Count and Say 
 90 . Compare version numbers 
 
+91 . Inorder Traversal (with recursion and without recursion)
+
+#Recursive code
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def inorderTraversal(self, root: TreeNode) -> List[int]:
+        def rec(node,ans):
+            if node == None:
+                return
+            
+            rec(node.left,ans)
+            ans.append(node.val)
+            rec(node.right,ans)
+            return
+            
+        ans = []
+        rec(root,ans)
+        return ans
+
+#Non Recursive code
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def inorderTraversal(self, root: TreeNode) -> List[int]:
+        ans = []
+        stack = [root]
+        x = root
+        while len(stack) > 0:
+            if x == None:
+                stack.pop()
+                if len(stack) == 0:
+                    break
+                    
+                e = stack.pop()
+                ans.append(e.val)
+                stack.append(e.right)
+                x = e.right
+                
+            else:
+                stack.append(x.left)
+                x = x.left
+            
+        return ans
+
+92 . Preorder Traversal (with recursion and without recursion) 
+
+#Recursive Code
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def preorderTraversal(self, root: TreeNode) -> List[int]:
+        def rec(node,ans):
+            if node == None:
+                return
+            
+            ans.append(node.val)
+            rec(node.left,ans)
+            rec(node.right,ans)
+            return
+            
+        ans = []
+        rec(root,ans)
+        return ans
+ 
+#Non Recursive Code
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def preorderTraversal(self, root: TreeNode) -> List[int]:
+        stack = [root]
+        ans = []
+        x = root
+        while len(stack) > 0:
+            if x == None:
+                stack.pop()
+                if len(stack) == 0:
+                    break
+                    
+                e = stack.pop()
+                x = e.right
+                stack.append(x)
+                
+            else:
+                ans.append(x.val)
+                stack.append(x.left)
+                x = x.left
+                
+        return ans
+
+93 . Postorder Traversal (with recursion and without recursion) 
+
+# Recursive
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def postorderTraversal(self, root: TreeNode) -> List[int]:
+        def rec(node,ans):
+            if node == None:
+                return
+            
+            rec(node.left,ans)
+            rec(node.right,ans)
+            ans.append(node.val)
+            # rec(node.right,ans)
+            return
+            
+        ans = []
+        rec(root,ans)
+        return ans
+
+#Non Recursive Code
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+class Solution:
+    def postorderTraversal(self, root: TreeNode) -> List[int]:
+        stack = [root]
+        x = root
+        ans = []
+        while len(stack) > 0:
+            if x == None:
+                stack.pop()
+                if len(stack) == 0:
+                    break
+                
+                e = stack[-1]
+                if e.right == None:
+                    stack.pop()
+                    ans.append(e)
+                    if len(stack) == 0:
+                        break
+                        
+                    x = stack[-1]
+                    
+                else:
+                    if len(ans) > 0:
+                        if ans[-1] == e.right:
+                            stack.pop()
+                            ans.append(e)
+                            
+                        else:
+                            x = e.right
+                            stack.append(x)
+                        
+                    else:
+                        x = e.right
+                        stack.append(x)
+            
+            else:
+                if len(ans) > 0:
+                    if ans[-1] == x.right:
+                        ans.append(x)
+                        stack.pop()
+                        if len(stack) > 0:
+                            x = stack[-1]
+                            
+                        else:
+                            break
+                            
+                        continue
+                        
+                    if ans[-1] == x.left:
+                        if x.right == None:
+                            ans.append(x)
+                            stack.pop()
+                            if len(stack) > 0:
+                                x = stack[-1]
+                                
+                            else:
+                                break
+                            
+                            continue
+                            
+                        x = x.right
+                        stack.append(x)
+                        continue
+                        
+                
+                x = x.left
+                stack.append(x)
+        
+        r = []
+        for i in ans:
+            r.append(i.val)
+        
+        return r
+        
+
+94 . Binary Tree Right Side View
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def rightSideView(self, root: TreeNode) -> List[int]:
+        def rec(node,cnt,level):
+            if node == None:
+                return
+            
+            if cnt not in level:
+                level[cnt] = node.val
+                
+            rec(node.right,cnt+1,level)
+            rec(node.left,cnt+1,level)
+            return
+        
+        if root == None:
+            return []
+        
+        level = {}
+        rec(root,0,level)
+        # print(level)
+        ma = 0
+        for i in level:
+            ma = max(ma,i)
+        
+        ans = [0]*(ma+1)
+        for i in range(len(ans)):
+            ans[i] = level[i]
+            
+        return ans
+
+95 . Bottom View of Binary Tree
+
+def bottomView(root):
+    # code here
+    def rec(node,dist,cnt,level):
+        if node == None:
+            return
+        
+        if dist in level:
+            x = level[dist]
+            if x[0] <= cnt:
+                level[dist] = (cnt,node.data)
+                    
+        else:
+            level[dist] = (cnt,node.data)
+        
+        rec(node.left,dist-1,cnt+1,level)
+        rec(node.right,dist+1,cnt+1,level)
+        return
+    
+    level = {}
+    rec(root,0,0,level)
+    # print(level)
+    ans = []
+    for i in level:
+        ans.append((i,level[i][1]))
+        
+    ans.sort()
+    l = []
+    for i in ans:
+        l.append(i[1])
+        
+    return l
+            
+96 . Top View of Binary Tree 
+
+class Solution:
+    
+    #Function to return a list of nodes visible from the top view 
+    #from left to right in Binary Tree.
+    def topView(self,root):
+        # code here
+        def rec(node,dist,cnt,level):
+            if node == None:
+                return
+        
+            if dist in level:
+                x = level[dist]
+                if x[0] >= cnt:
+                    level[dist] = (cnt,node.data)
+                    
+            else:
+                level[dist] = (cnt,node.data)
+                
+            rec(node.right,dist+1,cnt+1,level)
+            rec(node.left,dist-1,cnt+1,level)
+            return
+    
+        level = {}
+        rec(root,0,0,level)
+        # print(level)
+        ans = []
+        for i in level:
+            ans.append((i,level[i][1]))
+        
+        ans.sort()
+        l = []
+        for i in ans:
+            l.append(i[1])
+        
+        return l
+
+97 . Level order Traversal / Level order traversal in spiral form 
