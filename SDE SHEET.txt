@@ -3442,3 +3442,89 @@ class Solution:
         rec(p,q)
         return ans[0]
         
+103 . Binary Tree Maximum Path Sum
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def maxPathSum(self, root: TreeNode) -> int:
+        def rec(node):
+            if node == None:
+                return 0
+            
+            val = node.val
+            e1 = rec(node.left)
+            e2 = rec(node.right)
+            a1 = e1+e2+val
+            r = ans[0]
+            z = max(e1+val,e2+val,a1,val)
+            ans[0] = max(r,z)
+            return max(e1+val,e2+val,val,0)
+        
+        ans = [-1*(10**18)]
+        rec(root)
+        return ans[0]
+        
+104 . Construct Binary Tree from inorder and preorder
+
+105 . Construct Binary Tree from Inorder and Postorder
+
+106 . Symmetric Binary Tree
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def rec(self,node1,node2):
+        if (node1 == None and node2 != None) or (node1 != None and node2 == None):
+            return 0
+        
+        if node1 == None and node2 == None:
+            return 1
+        
+        if node1.val != node2.val:
+            return 0
+        
+        return self.rec(node1.left,node2.right)&self.rec(node1.right,node2.left)
+    
+    
+    def isSymmetric(self, root: TreeNode) -> bool:
+        self.root = root
+        f = self.rec(root.left,root.right)
+        if f:
+            return True
+        
+        return False
+
+107 . Flatten Binary Tree to LinkedList 
+
+class Solution:
+    def flatten(self, root: TreeNode) -> None:
+        curr = root
+        
+        while curr:
+            if curr.left != None:
+                p = curr.left
+                while p.right != None:
+                    p = p.right
+                    
+                p.right = curr.right
+                
+                curr.right = curr.left
+                curr.left = None
+            
+            curr = curr.right
+
+
+108 . Check if Binary Tree is mirror of itself or not   
+
+Same Question as 106.
+
+109 .
