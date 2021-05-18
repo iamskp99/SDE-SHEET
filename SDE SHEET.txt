@@ -3527,4 +3527,463 @@ class Solution:
 
 Same Question as 106.
 
-109 .
+109 . Populate Next Right pointers of Tree 
+
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, val: int = 0, left: 'Node' = None, right: 'Node' = None, next: 'Node' = None):
+        self.val = val
+        self.left = left
+        self.right = right
+        self.next = next
+"""
+
+class Solution:
+    def rec(self,node,rip):
+        if node == None:
+            return None
+        
+        node.next = rip
+        self.rec(node.left,node.right)
+        
+        if rip == None:
+            z = None
+            
+        else:
+            z = rip.left
+            
+        self.rec(node.right,z)
+        return node
+        
+    
+    def connect(self, root: 'Node') -> 'Node':
+        self.root = root
+        return self.rec(self.root,None)
+
+110 . Search given Key in BST 
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def rec(self,node):
+        if node == None:
+            return None
+        
+        if self.val == node.val:
+            return node
+        
+        if self.val < node.val:
+            return self.rec(node.left)
+            
+        else:
+            return self.rec(node.right)
+    
+    def searchBST(self, root: TreeNode, val: int) -> TreeNode:
+        self.root = root
+        self.val = val
+        return self.rec(self.root)
+
+111 . Construct BST from given keys (Sorted). 
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def rec(self,low,high,ind):
+        if high < low:
+            return None
+        
+        mid = low+((high-low)//2)
+        node = TreeNode()
+        node.val = self.nums[mid-1]
+        node.left = self.rec(low,mid-1,ind*2)
+        node.right = self.rec(mid+1,high,(ind*2)+1)
+        return node
+    
+    def sortedArrayToBST(self, nums: List[int]) -> TreeNode:
+        self.nums = nums
+        return self.rec(1,len(nums),1)
+
+112 . Check is a BT is BST or not 
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def rec(self,node,mi,ma):
+        if node == None:
+            return True
+        
+        val = node.val
+        if val > mi and val < ma:
+            return self.rec(node.left,mi,node.val)&self.rec(node.right,node.val,ma)
+            
+        else:
+            return False
+    
+    def isValidBST(self, root: TreeNode) -> bool:
+        self.root = root
+        return self.rec(self.root,-1*(10**18),10**18)
+        
+        
+113 . Find LCA of two nodes in BST 
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def rec(self,node,p,q):
+        if node.val == p.val or node.val == q.val:
+            return node
+        
+        if node.val > p.val and node.val > q.val:
+            return self.rec(node.left,p,q)
+        
+        if node.val < p.val and node.val < q.val:
+            return self.rec(node.right,p,q)
+        
+        return node
+    
+    
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        self.root = root
+        return self.rec(self.root,p,q)
+        
+114 . Predecessor and Successor
+
+#INORDER PREDECESSOR 
+
+"""
+Definition of TreeNode:
+class TreeNode:
+    def __init__(self, val):
+        self.val = val
+        self.left, self.right = None, None
+"""
+
+class Solution:
+    """
+    @param root: the given BST
+    @param p: the given node
+    @return: the in-order predecessor of the given node in the BST
+    """
+    def ans(self,root,key):
+        current = self.search(root,key)
+        if current.left != None:
+            return self.findMax(current.left)
+
+        res = None
+        node = root
+        while node != current:
+            if node.val < current.val:
+                res = node
+                node = node.right
+
+            else:
+                node = node.left
+
+        return res
+            
+    def findMax(self,node):
+        while node.right != None:
+            node = node.right
+            
+        return node
+    
+    def search(self,node,key):
+        if node.val == key:
+            return node
+        
+        # print(node.val,key)
+        if node.val < key:
+            return self.search(node.right,key)
+            
+        return self.search(node.left,key)
+
+    def inorderPredecessor(self, root, p):
+        # write your code here
+        if root == None:
+            return None
+            
+        self.root = root
+        self.key = p 
+        return self.ans(root,p.val)
+
+#INORDER SUCCESSOR
+
+import sys
+sys.setrecursionlimit(10**6)
+# Definition for a  binary tree node
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    # @param A : root node of tree
+    # @param B : integer
+    # @return the root node in the tree
+    
+    def ans(self,root,val):
+        current = self.search(root,val)
+        if current.right != None:
+            return self.findMin(current.right)
+            
+        else:
+            res = None
+            node = root
+            while node != current:
+                if node.val < current.val:
+                    node = node.right
+                    
+                else:
+                    res = node
+                    node = node.left
+                    
+            return res
+    
+    def findMin(self,node):
+        while node.left != None:
+            node = node.left
+            
+        return node
+    
+    def search(self,node,val):
+        if node.val == val:
+            return node
+            
+        if node.val < val:
+            return self.search(node.right,val)
+            
+        return self.search(node.left,val)
+    
+    
+    def getSuccessor(self, A, B):
+        self.root = A
+        self.key = B
+        return self.ans(self.root,self.key)
+        
+
+115 . Floor and Ceil in a BST 
+
+### Similar to INORDER SUCCESSOR AND INORDER PREDECESSOR 
+
+116 . Find K-th smallest and K-th largest element in BST (2 different Questions)
+
+117 . Find a pair with a given sum in BST
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def rec(self,node):
+        if node == None:
+            return
+        
+        self.rec(node.left)
+        dat = node.val
+        rem = self.val-dat
+        if rem in self.dict:
+            self.flag = True
+            
+        self.dict.add(dat)
+        self.rec(node.right)
+        return
+    
+    def findTarget(self, root: TreeNode, k: int) -> bool:
+        self.root = root
+        self.dict = set() 
+        self.flag = False
+        self.val = k
+        self.rec(root)
+        return self.flag
+
+118 . BST iterator 
+
+119 . Size of the largest BST in a Binary Tree
+
+120 . Serialize and deserialize Binary Tree
+
+121 . Convert Binary Search Tree to Sorted Doubly Linked List
+
+122 . Find median in a stream of running integers.
+
+import heapq
+class MedianFinder:
+    def __init__(self):
+        """
+        initialize your data structure here.
+        """
+        self.h1 = []
+        self.h2 = []
+        self.n = 0
+        heapq.heapify(self.h1)
+        heapq.heapify(self.h2)
+        # print(self.h1,"h1")
+        # print(self.h2,"h2")
+        return
+
+    def addNum(self, num: int) -> None:
+        now = self.n+1
+        if now//2 > self.n//2:
+            if len(self.h1) == 0:
+                e = heapq.heappop(self.h2)
+                ma = max(e,num)
+                mi = min(e,num)
+                heapq.heappush(self.h1,-1*mi)
+                heapq.heappush(self.h2,ma)
+            
+            elif num <= -1*self.h1[0]:
+                # e = heapq.heappop(self.h2)
+                heapq.heappush(self.h1,-1*num)
+                # heapq.heappush(self.h2,e)
+                
+            else:
+                e = heapq.heappop(self.h2)
+                ma = max(e,num)
+                mi = min(e,num)
+                heapq.heappush(self.h1,-1*mi)
+                heapq.heappush(self.h2,ma)
+            
+        
+        else:
+            ele1 = -1*(10**18)
+            if len(self.h1) > 0:
+                ele1 = -1*self.h1[0]
+                
+            if num > ele1:
+                heapq.heappush(self.h2,num)
+                
+            else:
+                x = -1*heapq.heappop(self.h1)
+                heapq.heappush(self.h2,x)
+                heapq.heappush(self.h1,-1*num)
+                
+        self.n = self.n+1
+        # print(self.h1,"h1")
+        # print(self.h2,"h2")
+        return None
+
+    def findMedian(self) -> float:
+        # print(self.h1,"h1")
+        # print(self.h2,"h2")
+        if self.n%2 == 0:
+            e1 = -1*self.h1[0]
+            e2 = self.h2[0]
+            return (e1+e2)/2
+        
+        return self.h2[0]
+        
+
+
+# Your MedianFinder object will be instantiated and called as such:
+# obj = MedianFinder()
+# obj.addNum(num)
+# param_2 = obj.findMedian()
+
+123 . K-th largest element in a stream. 
+
+124 . Distinct numbers in Window. 
+
+class Solution:
+	# @param A : list of integers
+	# @param B : integer
+	# @return a list of integers
+	def dNums(self, A, B):
+	    d = {}
+	    i = 0
+	    n = len(A)
+	    while i < B:
+	        x = A[i]
+	        if x in d:
+	            d[x] += 1
+	        
+	        else:
+	            d[x] = 1
+	            
+	        i = i+1
+	        
+	    ans = []
+	    ans.append(len(d))
+	    p1 = 0
+	    p2 = i
+	    while p2 < n:
+	        x = A[p2]
+	        if x in d:
+	            d[x] += 1
+	            
+	        else:
+	            d[x] = 1
+	            
+	        d[A[p1]] -= 1
+	        if d[A[p1]] == 0:
+	            del d[A[p1]]
+	            
+	        ans.append(len(d))
+	        p2 += 1
+	        p1 += 1
+	        
+	    return ans
+
+125 . K-th largest element in an unsorted array. 
+
+#Partition Method
+import random
+
+class Solution:
+    def rec(self,start,end):
+        # print(start,end,self.k)
+        ind = random.randrange(start,end+1)
+        ele = self.nums[ind]
+        self.nums[ind],self.nums[end] = self.nums[end],self.nums[ind]
+        p0 = start
+        p1 = start
+        comp = self.nums[end]
+        while p1 < end:
+            x = self.nums[p1]
+            if x < comp:
+                self.nums[p1],self.nums[p0] = self.nums[p0],self.nums[p1]
+                p0 += 1
+                p1 += 1
+                
+            else:
+                p1 += 1
+                
+        self.nums[p0],self.nums[end] = self.nums[end],self.nums[p0]
+        # print(self.nums)
+        if self.k == p0:
+            return self.nums[p0]
+        
+        if self.k < p0:
+            return self.rec(start,p0-1)
+        
+        return self.rec(p0+1,end)
+        
+    
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        self.nums = nums
+        self.k = len(self.nums)-k
+        return self.rec(0,len(self.nums)-1)
+
+126 . Flood-fill Algorithm
+
+
