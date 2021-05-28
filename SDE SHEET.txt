@@ -1790,11 +1790,277 @@ class Solution:
             
         return "".join(ans)
 
-53 . N queens Problem 
-54 . Sudoko 
-55 . M coloring Problem (Graph prob) 
-56 . Rat in a Maze 
-57 . Print all Permutations of a string/array 
+53. Permutations
+
+class Solution:
+    #Solution with set
+    def rec(self,som,visited):
+        if len(som) == len(self.nums):
+            self.ans.append(som)
+            return
+        
+        
+        for i in self.nums:
+            if i in visited:
+                continue
+            
+            e = set()
+            for j in visited:
+                e.add(j)
+                
+            e.add(i)
+            self.rec(som+[i],e)
+            
+        return
+    
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        self.nums = nums
+        self.ans = []
+        visited = set()
+        self.rec([],visited)
+        return self.ans
+
+#Space Optimized
+class Solution:
+    def rec(self,ptr,som):
+        if ptr == len(som):
+            self.ans.append(som)
+            
+        for i in range(ptr,len(self.nums)):
+            o = []
+            for j in som:
+                o.append(j)
+                
+            o[ptr],o[i] = o[i],o[ptr]
+            self.rec(ptr+1,o)
+            
+        return
+    
+    
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        self.nums = nums
+        self.ans = []
+        l = []
+        for i in self.nums:
+            l.append(i)
+            
+        self.rec(0,l)
+        return self.ans    
+    
+
+54 . N queens Problem 
+
+class Solution:
+    def rec(self,col,mat):
+        if col == self.n:
+            o = []
+            for i in mat:
+                o.append("".join(i))
+                
+            self.ans.append(o)
+            return
+        
+        for row in range(self.n):
+            #Checking if the placing is valid or not
+            flag = 0
+            #Row wise
+            for e in range(self.n):
+                if mat[row][e] == "Q":
+                    flag = 1
+                    break
+                    
+            #Column wise
+            for e in range(self.n):
+                if mat[e][col] == "Q":
+                    flag = 1
+                    break
+            
+            #Diagonal wise
+            r = row
+            c = col
+            while r > -1 and c > -1:
+                if mat[r][c] == "Q":
+                    flag = 1
+                    break
+                    
+                r -= 1
+                c -= 1
+                
+            r = row
+            c = col
+            while r < self.n and c < self.n:
+                if mat[r][c] == "Q":
+                    flag = 1
+                    break
+                    
+                r += 1
+                c += 1
+                
+            r = row
+            c = col
+            while r > -1 and c < self.n:
+                if mat[r][c] == "Q":
+                    flag = 1
+                    break
+                    
+                r -= 1
+                c += 1
+                
+            r = row
+            c = col
+            while r < self.n and c > -1:
+                if mat[r][c] == "Q":
+                    flag = 1
+                    break
+                    
+                r += 1
+                c -= 1
+                
+            if flag:
+                continue
+                
+            tmat = []
+            for h1 in mat:
+                w = []
+                for h2 in h1:
+                    w.append(h2)
+                    
+                tmat.append(w)
+                
+            tmat[row][col] = "Q"
+            self.rec(col+1,tmat)
+            
+        return
+                
+    def solveNQueens(self, n: int) -> List[List[str]]:
+        self.n = n
+        self.ans = []
+        mat = []
+        for i in range(n):
+            o = []
+            for j in range(n):
+                o.append(".")
+                
+            mat.append(o)
+        
+        self.rec(0,mat)
+        return self.ans
+
+55 . Sudoko
+
+class Solution:
+    def solve(self):
+        for i in range(9):
+            for j in range(9):
+                if self.board[i][j] == ".":
+                    for k in range(1,10):
+                        if self.isValid(i,j,str(k)) == True:
+                            self.board[i][j] = str(k)
+                            if self.solve() == True:
+                                return True
+                            
+                            else:
+                                self.board[i][j] = "."
+                        
+                    return False
+                
+        return True
+    
+    def isValid(self,row,col,c):
+        for i in range(9):
+            if self.board[i][col] == c:
+                return False
+            
+            if self.board[row][i] == c:
+                return False
+            
+            if self.board[(3*(row//3))+(i//3)][(3*(col//3))+(i%3)] == c:
+                return False
+            
+        return True
+    
+    
+    def solveSudoku(self, board: List[List[str]]) -> None:
+        """
+        Do not return anything, modify board in-place instead.
+        """
+        self.board = board
+        self.solve()
+        return
+ 
+56 . M coloring Problem (Graph prob) 
+
+#Function to determine if graph can be coloured with at most M colours such
+#that no two adjacent vertices of graph are coloured with same colour.
+def isValid(node,graph,color,r):
+    for i in range(len(graph[0])):
+        if graph[node][i]:
+            if color[i] == r:
+                return False
+                
+    return True
+    
+
+def solve(node,graph,k,V,color):
+    if node == V:
+        return True
+        
+    for c in range(1,k+1):
+        if isValid(node,graph,color,c):
+            color[node] = c
+            if solve(node+1,graph,k,V,color):
+                return True
+                
+            else:
+                color[node] = 0
+        
+    return False
+
+def graphColoring(graph, k, V):
+    #your code here
+    color = [0 for i in range(V)]
+    if solve(0,graph,k,V,color):
+        return True
+        
+    return False
+
+
+57 . Rat in a Maze 
+
+import sys
+sys.setrecursionlimit(10**6)
+class Solution:
+    def findPath(self, m, n):
+        # code here
+        def solve(i,j,path,n,m,di,dj):
+            if i == n-1 and j == n-1:
+                ans.append(path)
+                return
+                
+            else:
+                direction = "DLRU"
+                for ind in range(4):
+                    nexti = i+di[ind]
+                    nextj = j+dj[ind]
+                    if nexti < 0 or nexti >= n or nextj < 0 or nextj >= n:
+                        continue
+                    
+                    if m[nexti][nextj] == 1:
+                        m[i][j] = 0
+                        solve(nexti,nextj,path+direction[ind],n,m,di,dj)
+                        m[i][j] = 1
+                
+                return
+        
+        ans = []
+        di = [1,0,0,-1]
+        dj = [0,-1,1,0]
+        if m[0][0]:
+            solve(0,0,"",n,m,di,dj)
+        
+        return ans
+
+
 58 . Word Break (print all ways)
 
 59 .  1/N-th root of an integer (use binary search) (square root, cube root, ..)
@@ -3985,5 +4251,93 @@ class Solution:
         return self.rec(0,len(self.nums)-1)
 
 126 . Flood-fill Algorithm
+
+from collections import deque
+class Solution:
+    def bfs(self,start):
+        explored = set()
+        visited = {start}
+        l = [start]
+        queue = deque(l)
+        color = self.image[start[0]][start[1]]
+        while len(queue) > 0:
+            ele = queue.popleft()
+            edges = [(ele[0]-1,ele[1]),(ele[0]+1,ele[1]),(ele[0],ele[1]-1),(ele[0],ele[1]+1)]
+            self.image[ele[0]][ele[1]] = self.newColor
+            explored.add(ele)
+            for x in edges:
+                if x[0] >= 0 and x[1] >= 0 and x[0] < len(self.image) and x[1] < len(self.image[0]):
+                    if x in visited:
+                        continue
+                        
+                    else:
+                        if self.image[x[0]][x[1]] == color:
+                            visited.add(x)
+                            queue.append(x)
+                        
+        return
+    
+    
+    def floodFill(self, image: List[List[int]], sr: int, sc: int, newColor: int) -> List[List[int]]:
+        self.image = image
+        self.start = (sr,sc)
+        self.newColor = newColor
+        self.bfs(self.start)
+        return self.image
+
+127 . Clone a graph (Not that easy as it looks) 
+
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, val = 0, neighbors = None):
+        self.val = val
+        self.neighbors = neighbors if neighbors is not None else []
+"""
+
+class Solution:
+    def dfs(self,i):
+        if i not in self.visited and i != None:
+            if i.val in self.d:
+                x = self.d[i.val]
+                
+            else:
+                x = Node(i.val,[])
+                self.d[i.val] = x
+            
+            self.visited.add(i)
+            for u in i.neighbors:
+                if u in self.visited:
+                    x.neighbors.append(self.d[u.val])
+                    
+                else:
+                    if u.val in self.d:
+                        x.neighbors.append(self.d[u.val])
+                        
+                    else:
+                        w = Node(u.val,[])
+                        self.d[u.val] = w
+                        x.neighbors.append(self.d[u.val])
+                        self.dfs(u)
+                        
+            return
+            
+        return
+    
+    def cloneGraph(self, node: 'Node') -> 'Node':
+        if node == None:
+            return None
+        
+        self.visited = set()
+        self.d = {}
+        self.dfs(node)
+        return self.d[node.val]
+
+128 . DFS
+129 . BFS
+130 . Detect A cycle in Undirected Graph/Directed Graph 
+## These are covered.
+
+131 . Topo Sort
 
 
