@@ -21,6 +21,13 @@ SDE Sheet (Striver)
             
         return c
 
+Explanation of this approach : Suppose the distance between Point of Collision "C" and the starting point is "a".
+So, for the collision to happen the fast pointer would have to move 2a distance.
+Now,the difference between 2a-a = a. So,the fast pointer would have to move extra "a" distance.
+Now Suppose the distance from starting point of the loop to the point of collision is x.Then the difference between starting point of the loop and the collision 
+point will be a-x. So,the clock wise distance from point of collision to the starting of loop position will be x.
+
+
 2 . Sort an array of 0’s 1’s 2’s without using extra space or sorting algo 
 
 def sortColors(self, nums: List[int]) -> None:
