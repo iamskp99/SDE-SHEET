@@ -2676,7 +2676,7 @@ class Solution:
             if len(stack) == 0:
                 stack.append(i)
                 continue
-            
+          
             if arr[i] > arr[stack[-1]]:
                 while len(stack) > 0:
                     if arr[i] <= arr[stack[-1]]:
