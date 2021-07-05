@@ -4341,10 +4341,153 @@ class Solution:
         return self.d[node.val]
 
 128 . DFS
+#No need
+
 129 . BFS
+#No need
+
 130 . Detect A cycle in Undirected Graph/Directed Graph 
-## These are covered.
+
+#Undirected Graph is trivial
+
+#Dircted Graph
+
+(DFS Approach)
+class Solution
+{
+    private:
+   bool dfs(int node,vector<int> adj[],int vis[],int dfsVis[]){
+	    vis[node] = 1;
+	    dfsVis[node] = 1;
+	    for(auto x: adj[node]){
+	        if(!vis[x]){
+	            if(dfs(x,adj,vis,dfsVis)){
+	                return true;
+	            }
+	        }
+	        else if(dfsVis[x] == 1){
+	            return true;
+	        }
+	    }
+	    dfsVis[node] = 0;
+	    return false;
+	}
+   
+    public:
+	//Function to detect cycle in a directed graph.
+    
+	
+	bool isCyclic(int V, vector<int> adj[]) 
+	{
+	   	// code here
+	   	int vis[V],dfsVis[V];
+	   	memset(vis,0,sizeof(vis));
+	   	memset(dfsVis,0,sizeof(dfsVis));
+	   	for(int i = 0; i < V; i++){
+	   	    if(!vis[i]){
+	   	        if(dfs(i,adj,vis,dfsVis) == 1){
+	   	            return true;
+	   	        }
+	   	    }
+	   	}
+	   	return false;
+	}
+};
+
+(BFS APPROACH)
+
+from collections import deque
+import sys
+input = sys.stdin.readline
+
+#Topological Sort By Kahn's Algoritm
+
+class Solution:
+    def kahn(self,indegree,adj,V):
+        ans = []
+        visited = [0]*V
+        stack = deque([])
+        for i in range(V):
+            x = indegree[i]
+            if x == 0 and visited[i] == 0:
+                stack.append(i)
+            
+            while len(stack) != 0:
+                e = stack.popleft()
+                for j in adj[e]:
+                    indegree[j] -= 1
+                    if indegree[j] == 0:
+                        stack.append(j)
+                
+                visited[e] = 1
+                ans.append(e)
+                
+        if len(ans) == V:
+            return 0
+            
+        return 1
+    
+    #Function to detect cycle in a directed graph.
+    def isCyclic(self, V, adj):
+        # code here
+        indegree = [0]*V
+        for i in range(len(adj)):
+            for j in adj[i]:
+                indegree[j] += 1
+                
+        return self.kahn(indegree,adj,V)
+
 
 131 . Topo Sort
+(Kahn's Algorithm)
 
+from collections import deque
+import sys
+input = sys.stdin.readline
 
+def kahn(indegree,adj,V):
+        ans = []
+        visited = [0]*V
+        stack = deque([])
+        for i in range(V):
+            x = indegree[i]
+            if x == 0 and visited[i] == 0:
+                stack.append(i)
+            
+            while len(stack) != 0:
+                e = stack.popleft()
+                for j in adj[e]:
+                    indegree[j] -= 1
+                    if indegree[j] == 0:
+                        stack.append(j)
+                
+                visited[e] = 1
+                ans.append(e)
+            
+        return ans
+
+(DFS)
+def topoSort(self, V, adj):
+        def dfs(node):
+            visited.add(node)
+            if node in graph:
+                for x in graph[node]:
+                    if x not in visited:
+                        dfs(x)
+                        
+            stack.append(node)
+            return
+            
+        stack = []
+        visited = set()
+        graph = adj
+        n = V
+        for i in range(n):
+            if i not in visited:
+                dfs(i)
+                
+        return stack[::-1]
+
+132 . Number of islands (Union Approach) Coz graph approach is Trivial
+
+133 . Bipartite Check (Trivial Question)
