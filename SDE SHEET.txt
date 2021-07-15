@@ -21,11 +21,21 @@ SDE Sheet (Striver)
             
         return c
 
-Explanation of this approach : Suppose the distance between Point of Collision "C" and the starting point is "a".
-So, for the collision to happen the fast pointer would have to move 2a distance.
-Now,the difference between 2a-a = a. So,the fast pointer would have to move extra "a" distance.
-Now Suppose the distance from starting point of the loop to the point of collision is x.Then the difference between starting point of the loop and the collision 
-point will be a-x. So,the clock wise distance from point of collision to the starting of loop position will be x.
+Explanation of this approach : Suppose the distance between starting point "S" and start of the loop "L" is 
+"F" and distance between "L" and collision point "P" is "a".Length of one loop is "C".
+
+So,the hare would have covered twice the distance of tortoise before colliding at point "P".
+This equation must satisfy:
+
+2(F+a)=F+nC+a
+which gives F+a=nC 
+
+Now,in phase two we will put the tortoise at point "S" and "Hare" at point "P".
+And we will traverse both with same speed. Then they will meet at point "F".
+
+Why ?
+Since c-a+a = c
+if we remove "a" from "C".It will cover c-a distance which is exactly equal to "F".
 
 
 2 . Sort an array of 0’s 1’s 2’s without using extra space or sorting algo 
@@ -2088,6 +2098,50 @@ def findRoot(x,n):
 
     return low
 
+####################################################
+class Solution:
+    # @param A : integer
+    # @param B : integer
+    # @param C : list of integers
+    # @return an integer
+    def paint(self, A, B, C):
+        #Painter's Partition (Binary Search Approach)
+        def check(mid):
+            som = 0
+            painter = 1
+            for i in C:
+                if i > mid:
+                    painter = 10000
+                    break
+                
+                som = som+i
+                if som > mid:
+                    som = i
+                    painter += 1
+                
+                
+            return painter
+            
+        
+        M = 10000003
+        high = sum(C)
+        low = 1
+        ans = high
+        while low <= high:
+            mid = low+((high-low)//2)
+            check(mid)
+            if check(mid) <= A:
+                ans = mid
+                high = mid-1
+                
+            else:
+                low = mid+1
+                
+        return (ans*B)%M
+
+#########################################################
+
+
 60 . Median in a row-wise sorted Matrix
 
 from bisect import bisect_right
@@ -3173,6 +3227,60 @@ class Solution:
         return "".join(ans)
 
 82 . Implement ATOI/STRSTR 
+
+#Atoi
+
+class Solution:
+    def myAtoi(self, s: str) -> int:
+        n = len(s)
+        i = 0
+        while i < n:
+            x = s[i]
+            if x == " ":
+                i += 1
+                continue
+                
+            break
+            
+        mul = 1
+        if i >= n:
+            return 0
+            
+        if s[i] == "+":
+            i = i+1
+        
+        else:
+            if s[i] == "-":
+                mul -= 2
+                i = i+1
+        
+        ans = 0
+        while i < n:
+            x = s[i]
+            if x < '0' or x > '9':
+                break
+                
+            
+            ans = (10*ans)+(ord(x)-ord('0'))
+            if ((ans//10 > (2**31)//10) or (ans//10 == ((2**31)//10) and x > '8')) and mul == -1:
+                ans = 2**31
+                i = i+1
+                continue
+                    
+            if ((ans//10 > ((2**31)-1)//10) or (ans//10 == (((2**31)-1)//10) and x > '7')) and mul == 1:
+                ans = (2**31)-1
+                i = i+1
+                continue
+                    
+            i = i+1
+                
+            
+        return ans*mul
+                
+            
+  
+
+
 
 83 . Longest Common Prefix
 
