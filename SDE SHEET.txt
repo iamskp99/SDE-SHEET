@@ -35,7 +35,7 @@ And we will traverse both with same speed. Then they will meet at point "F".
 
 Why ?
 Since c-a+a = c
-if we remove "a" from "C".It will cover c-a distance which is exactly equal to "F".
+If we remove "a" from "c"(Coz we are starting from point "P").It will cover c-a distance which is exactly equal to "F".
 
 
 2 . Sort an array of 0’s 1’s 2’s without using extra space or sorting algo 
@@ -83,6 +83,8 @@ def sortColors(self, nums: List[int]) -> None:
             p2 = p2+1
             
         return
+
+#Explanation : Maintain two pointers acting as a wall.
 
 3 . Find Missing And Repeating.
 
