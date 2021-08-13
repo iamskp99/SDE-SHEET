@@ -28,14 +28,14 @@ So,the hare would have covered twice the distance of tortoise before colliding a
 This equation must satisfy:
 
 2(F+a)=F+nC+a
-which gives F+a=nC 
+which gives F+a=nC  (1)
 
 Now,in phase two we will put the tortoise at point "S" and "Hare" at point "P".
 And we will traverse both with same speed. Then they will meet at point "F".
 
 Why ?
 Since c-a+a = c
-If we remove "a" from "c"(Coz we are starting from point "P").It will cover c-a distance which is exactly equal to "F".
+If we remove "a" from "c"(Coz we are starting from point "P").It will cover c-a distance which is exactly equal to "F" (From equation (1)).
 
 
 2 . Sort an array of 0’s 1’s 2’s without using extra space or sorting algo 
@@ -211,7 +211,7 @@ def findTwoElement( self,arr, n):
             nums1[i] = nums2[cnt]
             cnt += 1
             
-        gap = math.ceil(len(nums1)/2)
+        gap = math.ceil(len(nums1)/2)  #Calculation of gaps
         f = 0
         while f == 0:
             for i in range(len(nums1)):
@@ -220,7 +220,7 @@ def findTwoElement( self,arr, n):
                     break
                     
                 if nums1[i] > nums1[j]:
-                    nums1[i],nums1[j] = nums1[j],nums1[i]
+                    nums1[i],nums1[j] = nums1[j],nums1[i]  #Swapping of elements
                     
             tg = gap
             gap = math.ceil(gap/2)
@@ -229,6 +229,10 @@ def findTwoElement( self,arr, n):
             
         return
 
+Explanation : If we are allowed to use an extra space of O(n+m) then we can take advantage of the fact that
+these two arrays are sorted.So,we can use two pointers(each pointer is at the start of both the arrays) and
+compare the elements at these two pointers. If the interviewer wants an optimized approach then we are gonna
+tell him shell sort method. 
 
 5 . Kadane's algorithm
 
@@ -265,9 +269,7 @@ def merge(self, intervals: List[List[int]]) -> List[List[int]]:
                 j = i+1
                 
             
-        ans.append([intervals[i][0],m])
-        
-        
+        ans.append([intervals[i][0],m])        
         return ans
 
 7 . SET MATRIX ZEROES
@@ -277,11 +279,11 @@ def setZeroes(self, matrix: List[List[int]]) -> None:
         Do not return anything, modify matrix in-place instead.
         """
         
-        c = matrix[0][0]
-        for i in range(len(matrix)):
-            for j in range(len(matrix[i])):
-                if matrix[i][j] == 0:
-                    if j == 0:
+        c = matrix[0][0]                           #So,what is happening here?
+        for i in range(len(matrix)):                The variable 'c' stores whether first column contains zero or
+            for j in range(len(matrix[i])):         not and the variable 'cd' contains whether element at first
+                if matrix[i][j] == 0:               row and first column contains zero or not(This will help us to 
+                    if j == 0:                      determine whether we have to set 0 to the first row. 
                         c = 0
                         
                     else:
@@ -310,6 +312,13 @@ def setZeroes(self, matrix: List[List[int]]) -> None:
                     
                     
         return
+
+Explanation : The first approach is that you are gonna ask the interviewer the range of the number of the matrix.
+For example all the elements of the matrix are greater than equal to zero.So,you can assign -1 to the values 
+that will change(Note you will not change the zeroes that are encountered while traversal because those zeroes may effect
+other rows and columns).After the traversal is done you are gonna change all the -1 to 0.
+The second approach uses two dummy arrays and it is quite trivial.
+
 
 8 . Pascal's Triangle
 
@@ -1148,7 +1157,7 @@ def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
 def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
         #Optimal Solution 2
         if headA == None or headB == None:
-            return None
+            return None                        
         
         a = headA
         b = headB
@@ -1158,7 +1167,7 @@ def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
             if a == None and b == None:
                 break
             
-            if a == None:
+            if a == None:   ==> Expalnation : Difference will be nullified in this assignment.
                 a = headB
                 
             if b == None:
@@ -1193,34 +1202,56 @@ def hasCycle(self, head: ListNode) -> bool:
 
 33 . Reverse Nodes in k-Group
 
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
     def reverseKGroup(self, head: ListNode, k: int) -> ListNode:
         if head == None or k == 1:
             return head
         
+        node = head
         cnt = 0
-        h = head
-        while h != None:
-            cnt += 1
-            h = h.next
-        
-        dummy = ListNode()
-        dummy.next = head
-        pre = dummy
-        nex = dummy
-        while cnt >= k:
-            cur = pre.next
-            nex = cur.next
-            for i in range(k-1):
-                cur.next = nex.next
-                nex.next = pre.next
-                pre.next = nex
-                nex = cur.next
+        while node != None:             # Explanation : Count the number of total nodes and calculate 
+            cnt += 1                      how much k-length lists are there.Make two variables first_element
+            node = node.next              and current_head. if flag == 0 assign head to the last element of
+                                          first k-length list. We have updated our list. Now we check 
+                                          what is the last_element of previous list(first_element variable) and 
+                                          we assign its next to our head which we got after doing reversal.  
+        cnt = cnt//k
+        first_element = None              
+        current_head = head
+        flag = 0
+        while cnt > 0:
+            count = 0
+            node = current_head
+            previous = None
+            while count < k:
+                ahead = node.next
+                node.next = previous
+                previous = node
+                node = ahead
+                count += 1
                 
-            pre = cur
-            cnt -= k
+            if flag == 0:
+                head = previous
+                flag = 1
+                
+            if first_element != None:
+                first_element.next = previous
+                
+            first_element = current_head
+            current_head = node
+                
+            cnt -= 1
         
-        return dummy.next
-
+        if first_element != None:
+            first_element.next = node
+            
+        return head
+        
 34 . Palindrome Linked List
 
 def isPalindrome(self, head: ListNode) -> bool:
@@ -4580,7 +4611,7 @@ class Solution:
 
 #Undirected Graph is trivial
 
-#Dircted Graph
+#Directed Graph
 
 (DFS Approach)
 class Solution
@@ -4718,7 +4749,49 @@ def topoSort(self, V, adj):
                 
         return stack[::-1]
 
-132 . Number of islands (Union Approach) Coz graph approach is Trivial
+132 . Number of islands 
+
+#Graph approach
+
+from collections import deque
+
+def get_number_of_islands(binaryMatrix):
+  visited = set()
+  n = len(binaryMatrix)
+  m = len(binaryMatrix[0])
+  ans = 0
+  for i in range(n):
+    for j in range(m):
+      if (i,j) in visited or binaryMatrix[i][j] == 0:
+        continue
+      
+      else:
+        ans += 1
+        #bfs((i,j),visited,binaryMatrix,n,m)
+        start = (i,j)
+        queue = deque([start])
+        visited.add(start)
+        while len(queue) > 0:
+          node = queue.popleft()
+          i = node[0]
+          j = node[1]
+          adjacent = [(i-1,j),(i+1,j),(i,j-1),(i,j+1)]
+          for child in adjacent:
+            x = child[0]
+            y = child[1]
+            if x < 0 or y < 0 or x >= n or y >= m:
+              continue
+            
+            if child in visited:
+              continue
+            
+            if binaryMatrix[x][y] == 1:
+              visited.add(child)
+              queue.append(child)
+  
+  return ans
+
+#(Union Approach)
 
 133 . Bipartite Check (Trivial Question)
 
@@ -4829,3 +4902,86 @@ def dijkstra(v):
 
 138 . MST using Prim’s Algo
 
+
+#####################################################################################################
+Some Extra Problems
+
+*Binary Tree Level Order Traversal
+
+from collections import deque
+class Solution:
+    def levelOrder(self, root: TreeNode) -> List[List[int]]:
+        if root == None:
+            return []
+        
+        queue = deque([])
+        queue.append((root,0))
+        ans = []
+        for i in range(2001):
+            ans.append([])
+            
+        while len(queue) > 0:
+            x = queue.popleft()
+            node = x[0]
+            level = x[1]
+            ans[level].append(node.val)
+            if node.left != None:
+                queue.append((node.left,level+1))
+                
+            if node.right != None:
+                queue.append((node.right,level+1))
+                
+        while len(ans) > 0:
+            if len(ans[-1]) == 0:
+                ans.pop()
+                continue
+                
+            break
+                
+        return ans
+
+* Largest Cycle
+
+You are given a maze with N cells. Each cell may have multiple entry points but not more than one exit (ie. entry/exit points are unidirectional doors like valves).
+
+The cells are named with an integer value from 0 to N-1.
+
+You need to find the the length of the largest cycle in the maze. Return -1 if there are no cycles.
+
+INPUT FORMAT
+
+First line has the number of cells N
+Second line has list of N values of the edge[] array. edge[i] contains the cell number that can be reached from of cell ‘i’ in one step. edge[i] is -1 if the ‘i’th cell doesn’t have an exit.
+OUTPUT FORMAT
+
+length of the largest cycle.
+
+Code :
+
+def dfs(node,count):
+    if cycle_visited[node] == 1:
+        cnt[node] = count
+        return
+        
+    visited[node] = 1
+    cycle_visited[node] = 1
+    if arr[node] != -1:
+        dfs(arr[node],count+1)
+        
+    cycle_visited[node] = 0
+    return
+
+n = int(input())
+arr = list(map(int,input().split()))
+cnt = [0]*n
+visited = [0]*n
+cycle_visited = [0]*n
+for i in range(n):
+    if visited[i] == 0:
+        dfs(0,0)
+        
+ans = 0
+for i in cnt:
+    ans = max(ans,i)
+    
+print(ans)
