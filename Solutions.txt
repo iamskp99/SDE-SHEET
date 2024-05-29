@@ -2,8 +2,6 @@ Day 1: Arrays
 
 * Set Matrix Zeroes
 
-```python
-
 class Solution:
     def setZeroes(self, matrix: List[List[int]]) -> None:
         """
@@ -66,6 +64,25 @@ class Solution:
 
         return matrix
 
-```
+
+Day 4: Array Part - IV
+
+* 2Sum
+
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        d = {}
+        f = -1
+        for i in range(len(nums)):
+            x = nums[i]
+            e = target-x
+            if e in d:
+                f = d[e]
+                break
+                
+            d[x] = i
+            
+        return [i,f]
+
 
 
