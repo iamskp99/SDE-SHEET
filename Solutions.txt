@@ -95,6 +95,8 @@ class Solution:
         return l
 
 
+Note : If you want to find a row only , just write binomial coefficient of (x+y)^(r-1) where r is the row.
+
 
 
 
