@@ -65,8 +65,6 @@ class Solution:
         return matrix
 
 
-Day 4: Array Part - IV
-
 *  Pascal's Triangle
 
 
