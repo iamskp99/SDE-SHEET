@@ -67,22 +67,35 @@ class Solution:
 
 Day 4: Array Part - IV
 
-* 2Sum
+*  Pascal's Triangle
+
 
 class Solution:
-    def twoSum(self, nums: List[int], target: int) -> List[int]:
-        d = {}
-        f = -1
-        for i in range(len(nums)):
-            x = nums[i]
-            e = target-x
-            if e in d:
-                f = d[e]
-                break
+    def generate(self, numRows: int) -> List[List[int]]:
+        n = numRows
+        if n == 0:
+            return []
+        
+        if n == 1:
+            return [[1]]
+        
+        if n == 2:
+            return [[1],[1,1]]
+        
+        l = [[1],[1,1]]
+        for i in range(3,n+1):
+            c = l[-1]
+            o = [1]
+            for j in range(len(c)-1):
+                o.append(c[j]+c[j+1])
                 
-            d[x] = i
+            o.append(1)
+            l.append(o)
             
-        return [i,f]
+        return l
+
+
+
 
 
 
