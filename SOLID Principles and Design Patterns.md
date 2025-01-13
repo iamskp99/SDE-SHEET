@@ -820,6 +820,9 @@ weather_station
 
 <img width="1491" alt="Screenshot 2025-01-14 at 1 13 19 AM" src="https://github.com/user-attachments/assets/245daa9f-c138-4cb9-855b-63f3a4a664ae" />
 
+<img width="1475" alt="Screenshot 2025-01-14 at 1 15 48 AM" src="https://github.com/user-attachments/assets/4250b6ee-4a36-4f88-ad4d-6368e5b84ada" />
+
+
 Another example
 
 The **Decorator Design Pattern** is a structural design pattern that allows you to dynamically add new behaviors or responsibilities to an object without modifying its structure. It achieves this by wrapping an object with another object (a decorator) that adds the new behavior.
@@ -968,6 +971,161 @@ Simple Coffee, Milk, Sugar, Whipped Cream - $8.0
 2. **Debugging**: Wrapping objects in multiple decorators may make debugging more challenging.
 
 The Decorator Pattern is ideal when you need to add functionality dynamically without altering the object's structure or creating an extensive inheritance hierarchy.
+
+# Factory Design Pattern
+
+The **Factory Design Pattern** is a **creational design pattern** that provides an interface or method for creating objects in a super class, but allows subclasses to alter the type of objects that will be created. It helps in decoupling the client code from the specific classes it needs to instantiate.
+
+---
+
+### Key Concepts of the Factory Pattern
+
+1. **Factory Method**:  
+   - A method responsible for creating objects of specific types. Subclasses override this method to create instances of different classes.
+
+2. **Product**:  
+   - The type of object that the factory method creates.
+
+3. **Creator (Factory)**:  
+   - The class that contains the factory method.
+
+4. **Concrete Creator**:  
+   - A subclass of the factory that overrides the factory method to instantiate specific types of products.
+
+---
+
+### Types of Factory Patterns
+
+1. **Simple Factory**:  
+   - A static method or class responsible for creating objects based on input parameters. This is not a true design pattern but a programming idiom.
+
+2. **Factory Method**:  
+   - A class delegates the instantiation of objects to subclasses by defining a common interface.
+
+3. **Abstract Factory**:  
+   - A super-factory that creates families of related or dependent objects without specifying their concrete classes.
+
+---
+
+### Uses of the Factory Pattern
+
+1. **Decoupling Object Creation**  
+   - When the client code should not know the details of how objects are created or which concrete classes are used.
+   - **Example**: Database connection objects (e.g., MySQL, PostgreSQL, SQLite).
+
+2. **When the Exact Type is Determined at Runtime**  
+   - When you need to decide which class to instantiate based on runtime conditions.
+   - **Example**: A shape factory that creates circles, rectangles, or triangles based on user input.
+
+3. **When Managing Complex Object Creation**  
+   - When object creation requires significant setup or configuration.
+   - **Example**: Creating objects that depend on external resources like files or databases.
+
+4. **Promoting Code Reusability and Maintainability**  
+   - Centralizing object creation logic reduces duplication and makes changes easier.
+   - **Example**: UI widgets for different platforms (e.g., Windows, macOS, Linux).
+
+---
+
+### Example Code in Python
+
+Here’s an implementation of the **Factory Method Pattern**:
+
+```python
+from abc import ABC, abstractmethod
+
+# Product Interface
+class Shape(ABC):
+    @abstractmethod
+    def draw(self):
+        pass
+
+# Concrete Products
+class Circle(Shape):
+    def draw(self):
+        return "Drawing a Circle"
+
+class Rectangle(Shape):
+    def draw(self):
+        return "Drawing a Rectangle"
+
+class Triangle(Shape):
+    def draw(self):
+        return "Drawing a Triangle"
+
+# Creator (Factory)
+class ShapeFactory(ABC):
+    @abstractmethod
+    def create_shape(self) -> Shape:
+        pass
+
+# Concrete Creators
+class CircleFactory(ShapeFactory):
+    def create_shape(self) -> Shape:
+        return Circle()
+
+class RectangleFactory(ShapeFactory):
+    def create_shape(self) -> Shape:
+        return Rectangle()
+
+class TriangleFactory(ShapeFactory):
+    def create_shape(self) -> Shape:
+        return Triangle()
+
+# Client Code
+def draw_shape(factory: ShapeFactory):
+    shape = factory.create_shape()
+    print(shape.draw())
+
+# Usage
+circle_factory = CircleFactory()
+rectangle_factory = RectangleFactory()
+triangle_factory = TriangleFactory()
+
+draw_shape(circle_factory)    # Output: Drawing a Circle
+draw_shape(rectangle_factory) # Output: Drawing a Rectangle
+draw_shape(triangle_factory)  # Output: Drawing a Triangle
+```
+
+---
+
+### Advantages of the Factory Pattern
+
+1. **Encapsulation**: Hides the object creation logic from the client.
+2. **Loose Coupling**: Decouples client code from specific classes.
+3. **Scalability**: Easy to add new product types by introducing new factories.
+4. **Centralized Control**: Centralizes object creation, making maintenance easier.
+
+---
+
+### Disadvantages
+
+1. **Complexity**: Adds extra layers and complexity, especially with Abstract Factory.
+2. **Overhead**: For simple applications, it might be overkill.
+
+---
+
+### Example of a Simple Factory
+
+```python
+class ShapeSimpleFactory:
+    @staticmethod
+    def create_shape(shape_type: str) -> Shape:
+        if shape_type == "circle":
+            return Circle()
+        elif shape_type == "rectangle":
+            return Rectangle()
+        elif shape_type == "triangle":
+            return Triangle()
+        else:
+            raise ValueError("Unknown shape type")
+
+# Usage
+shape = ShapeSimpleFactory.create_shape("circle")
+print(shape.draw())  # Output: Drawing a Circle
+```
+
+The **Factory Design Pattern** is particularly useful when creating objects is complex, dependent on conditions, or involves multiple steps, ensuring clean and maintainable code.
 
 
 
