@@ -815,6 +815,7 @@ weather_station.attach(phone_display)
 weather_station.attach(window_display)
 
 weather_station
+```
 
 # Decorator Design Pattern
 
