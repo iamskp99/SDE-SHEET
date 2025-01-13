@@ -816,6 +816,158 @@ weather_station.attach(window_display)
 
 weather_station
 
+# Decorator Design Pattern
+
+<img width="1491" alt="Screenshot 2025-01-14 at 1 13 19 AM" src="https://github.com/user-attachments/assets/245daa9f-c138-4cb9-855b-63f3a4a664ae" />
+
+Another example
+
+The **Decorator Design Pattern** is a structural design pattern that allows you to dynamically add new behaviors or responsibilities to an object without modifying its structure. It achieves this by wrapping an object with another object (a decorator) that adds the new behavior.
+
+---
+
+### Key Concepts of the Decorator Pattern
+
+1. **Component (Interface/Abstract Class)**  
+   - Defines the common interface for objects that can have responsibilities added to them dynamically.
+   
+2. **Concrete Component**  
+   - The base object to which additional responsibilities can be attached.
+
+3. **Decorator (Abstract Class)**  
+   - Maintains a reference to a Component object and defines the interface that is consistent with the Component.
+
+4. **Concrete Decorators**  
+   - Extends the functionality of the Component by adding new behavior.
+
+---
+
+### Uses of the Decorator Pattern
+
+1. **Adding Responsibilities Dynamically**
+   - When you want to extend the behavior of objects dynamically at runtime, rather than statically at compile time.
+   - **Example:** Adding scrollbars, borders, or shadows to a GUI component like a text box.
+
+2. **Open/Closed Principle**
+   - When you want to keep the component class closed for modification but open for extension.
+   - **Example:** Adding different types of encryption to a data transmission object without altering its original implementation.
+
+3. **Replacing Inheritance**
+   - When inheritance would result in a complex and rigid class hierarchy, the Decorator Pattern provides a more flexible alternative.
+   - **Example:** Instead of creating multiple subclasses for variations of behavior, decorators can combine these variations.
+
+4. **Logging and Monitoring**
+   - Dynamically adding logging or monitoring capabilities to an existing object.
+   - **Example:** Adding a logging decorator to a database operation.
+
+5. **Modifying Behavior Based on Context**
+   - When the behavior of an object needs to change depending on external factors.
+   - **Example:** Adding seasonal discounts to a pricing object.
+
+---
+
+### Example Code in Python
+
+Here’s an implementation of the **Decorator Pattern**:
+
+```python
+from abc import ABC, abstractmethod
+
+# Component
+class Coffee(ABC):
+    @abstractmethod
+    def cost(self) -> float:
+        pass
+
+    @abstractmethod
+    def description(self) -> str:
+        pass
+
+# Concrete Component
+class SimpleCoffee(Coffee):
+    def cost(self) -> float:
+        return 5.0
+
+    def description(self) -> str:
+        return "Simple Coffee"
+
+# Decorator
+class CoffeeDecorator(Coffee):
+    def __init__(self, coffee: Coffee):
+        self._coffee = coffee
+
+    def cost(self) -> float:
+        return self._coffee.cost()
+
+    def description(self) -> str:
+        return self._coffee.description()
+
+# Concrete Decorators
+class MilkDecorator(CoffeeDecorator):
+    def cost(self) -> float:
+        return self._coffee.cost() + 1.0
+
+    def description(self) -> str:
+        return self._coffee.description() + ", Milk"
+
+class SugarDecorator(CoffeeDecorator):
+    def cost(self) -> float:
+        return self._coffee.cost() + 0.5
+
+    def description(self) -> str:
+        return self._coffee.description() + ", Sugar"
+
+class WhippedCreamDecorator(CoffeeDecorator):
+    def cost(self) -> float:
+        return self._coffee.cost() + 1.5
+
+    def description(self) -> str:
+        return self._coffee.description() + ", Whipped Cream"
+
+# Usage
+coffee = SimpleCoffee()
+print(f"{coffee.description()} - ${coffee.cost()}")
+
+# Add Milk
+coffee = MilkDecorator(coffee)
+print(f"{coffee.description()} - ${coffee.cost()}")
+
+# Add Sugar
+coffee = SugarDecorator(coffee)
+print(f"{coffee.description()} - ${coffee.cost()}")
+
+# Add Whipped Cream
+coffee = WhippedCreamDecorator(coffee)
+print(f"{coffee.description()} - ${coffee.cost()}")
+```
+
+---
+
+### Output
+
+```
+Simple Coffee - $5.0
+Simple Coffee, Milk - $6.0
+Simple Coffee, Milk, Sugar - $6.5
+Simple Coffee, Milk, Sugar, Whipped Cream - $8.0
+```
+
+---
+
+### Advantages of the Decorator Pattern
+
+1. **Flexibility**: Behavior can be added to individual objects without affecting others.
+2. **Avoids Subclass Explosion**: Reduces the need for multiple subclasses to achieve similar functionality.
+3. **Open/Closed Principle**: New decorators can be added without modifying existing code.
+
+---
+
+### Disadvantages
+
+1. **Complexity**: Can lead to a system with many small, similar objects, making it harder to understand.
+2. **Debugging**: Wrapping objects in multiple decorators may make debugging more challenging.
+
+The Decorator Pattern is ideal when you need to add functionality dynamically without altering the object's structure or creating an extensive inheritance hierarchy.
 
 
 
