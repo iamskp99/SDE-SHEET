@@ -1,0 +1,714 @@
+1) Design a notification service ?
+
+
+
+Designing a **Notification Service** is a common system design problem asked in interviews (e.g., Flipkart, Swiggy, Uber). It’s essential to approach this systematically, with scalability, reliability, and extensibility in mind.
+
+---
+
+## ✅ Problem Statement
+
+Design a **Notification Service** that can:
+
+* Send notifications via multiple channels: **Email**, **SMS**, **Push**, **WhatsApp**, etc.
+* Support **synchronous (instant)** and **asynchronous (bulk/scheduled)** delivery.
+* Handle **failures and retries**.
+* Allow **extensibility** to support new channels.
+* Be used by multiple services like Order, Delivery, Promotions, etc.
+
+---
+
+-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----
+
+ChannelType
+
+SMS
+push notification
+email
+
+
+User Table
+
+id 
+email
+
+
+User Prefrences Table
+
+user_id = uuid (User Table Id fk)  (Indexed)
+channel_type = enum (ChannelType) 
+enabled = boolean
+type = string
+template = jsonb
+schedule = string
+is_bulk = boolean
+
+(index on type+channel_type)
+
+
+
+Notification Table
+
+user_id = uuid
+channel_type = enum (ChannelType)
+message = jsonb
+schedule_from = integer (indexed)
+schedule_to = integer (indexed)
+
+
+schedule_from and schedule_to is in seconds and it wil be indexed.
+
+I can also make a seperate table for Templates.
+
+
+           						Client
+           						   | 
+           						   | (Post Requests)
+           						   |
+  							Notification Layer
+                             	   |
+                             	   |
+                             	   |
+	                               |   
+	                     --------------------
+	                     |        	|		|
+	                     |        	|		|
+	                     |        	|		|
+	                Cron from      DLQ   Push Based on channel_type
+	              notification
+	               	   table
+
+
+################################################################################################################################################################
+
+2) LLD + HLD of a limit system in Kotak. This should limit based on number of transactions, amount per user’s payment method. Handle atomicity, possible bottlenecks etc.
+
+
+Payment Table
+
+id = uuid
+payment_type = string (indexed)
+configuration_json = jsonb
+
+
+configuration_json will contain the rules like this
+{
+	refresh_window : int (seconds)
+	// Any other rule that should come here
+}
+
+
+User Table
+
+id = uuid
+email = string
+mobile_no = string
+payment_details_json = jsonb
+user_rule = jsonb
+
+
+payment_details_json will contain the fields like this
+
+
+{
+	payment_details : {
+			"credit_card_payment_type_details" : {
+			"initial_used_at" : date_time_field,
+			"last_used_at" : datetime_field,
+			"used_count": int
+		},
+		"upi_payment_type_details" : {
+			"initial_used_at" : date_time_field,
+			"last_used_at" : datetime_field,
+			"used_count": int
+		}
+	}
+}
+
+user_rule_json will contain rules just like configuration json of Payment Table but user_rule_json will override configuration json
+
+
+TransactionTable (Mapping of UserPayment)
+
+id = uuid
+user_id = uuid (fk to User Table)
+payment_type_id = uuid (fk to Payment Type Table)
+credit = bool (indexed)
+amount = int (indexed) (Assuming INR)
+status = StatusType
+
+
+																
+													User (Payment Gateway)
+													  |
+													  | 
+													  | (Redis for checking idempotency)
+													  | (Redis for concurrent request , I will use redis lock:user:{user_id}:{payment_type} ttl:5 sec)
+													  |
+												   Payment Service
+												      |
+												      |
+												      |
+												      DLQ
+
+
+
+
+################################################################################################################################################################
+
+
+3) Design an Auth Service.
+
+Designing an **Auth (Authentication & Authorization) Service** involves understanding **security, scalability, and usability**. Here's how you'd approach it step by step, covering **HLD (High-Level Design)** and **LLD (Low-Level Design)** aspects.
+
+---
+
+## 🔐 1. **Requirements Gathering (Functional + Non-Functional)**
+
+### Functional Requirements:
+
+* User registration (sign-up)
+* User login (sign-in)
+* Password hashing and verification
+* JWT-based or session-based authentication
+* Access token + Refresh token mechanism
+* Role-based or permission-based authorization
+* Logout / token revocation
+
+### Non-Functional Requirements:
+
+* Highly available and horizontally scalable
+* Secure storage of credentials
+* Stateless token validation
+* Rate limiting / brute-force protection
+* Audit logging
+* Extensible for mobile, web, and third-party apps
+
+---
+
+## 🏗️ 2. **High-Level Design (HLD)**
+
+### Components:
+
+```
++-------------------+       +-------------------+
+|  Web / Mobile App | <---> |    API Gateway     |
++-------------------+       +-------------------+
+                                     |
+                                     v
+                          +---------------------+
+                          |   Auth Service API   |
+                          +---------------------+
+                           |        |        
+          +----------------+        |        
+          |                         |                     
++----------------+     +---------------------+      
+|  User Database  |     | Token Management DB |      
++----------------+     +---------------------+     
+```
+
+### APIs (Examples):
+
+* `POST /signup`
+* `POST /login`
+* `POST /refresh`
+* `GET /me`
+* `POST /logout`
+
+---
+
+## 🛠️ 3. **Low-Level Design (LLD)**
+
+### ✅ Password Handling:
+
+* Use `bcrypt` or `argon2` to hash passwords
+* Store salt+hash in the DB
+* Never store plaintext passwords
+
+```python
+hashed_pw = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+```
+
+---
+
+### 🔐 Token Design:
+
+#### JWT (Stateless):
+
+* Header, Payload (userId, role, exp), Signature
+* Short-lived access tokens (15 mins)
+* Long-lived refresh tokens (7 days)
+
+#### Session-Based (Optional):
+
+* Store session ID in Redis
+* Send session cookie to client
+* Validate on each request
+
+---
+
+### 🧠 Refresh Token Strategy:
+
+* Store refresh token in DB or Redis (per device/user)
+* On refresh:
+
+  * Validate token
+  * Issue new access + refresh tokens
+  * Rotate old one
+
+---
+
+### 📊 DB Schema (Postgres/Mongo):
+
+#### `users`
+
+\| id | email | password\_hash | is\_active | created\_at |
+
+#### `refresh_tokens`
+
+\| id | user\_id | token | expires\_at | device\_fingerprint |
+
+#### `roles`
+
+\| id | name (e.g., admin, user) |
+
+#### `user_roles`
+
+\| user\_id | role\_id |
+
+---
+
+### 🧰 Rate Limiting:
+
+* Use Redis + token bucket or sliding window
+* e.g., 5 login attempts per 10 mins per IP/user
+
+
+################################################################################################################################################################
+
+4) Design survey monkey and analytics as a Saas, APIs, DB design, LLD and HLD flow.
+
+a) User Management
+
+User Signup/Login (Email/Password or OAuth)
+
+Create/Join Organizations (multi-tenancy)
+
+Roles: Admin, Editor, Viewer
+
+
+b) Survey Management
+
+Create a survey with:
+
+Title, description
+
+Multiple pages (optional)
+
+Status: Draft, Published, Closed
+
+Add questions of types:
+
+Single Choice (Radio)
+
+Multiple Choice (Checkbox)
+
+Text (Short/Long)
+
+Rating (1–5 or stars)
+
+Dropdown
+
+Set metadata:
+
+Allow anonymous?
+
+Allow multiple responses?
+
+Start/End time
+
+Clone / Delete / Archive survey
+
+c) Distribution & Access
+
+Generate public/private links
+
+Restrict access to specific emails/domains (optional)
+
+Schedule when a survey becomes live
+
+d) Response Collection
+
+Answer survey without login (if public)
+
+One response per user/email/device (toggleable)
+
+Auto-save as draft (optional)
+
+Validate required fields, input types
+
+e) Analytics
+
+Total responses count
+
+Per-question analytics:
+
+Pie chart / bar chart for choices
+
+Word cloud or list for text answers
+
+Average, median, NPS for ratings
+
+Filter responses by time/date range
+
+Export results (CSV/JSON)
+
+f) Auth, Security, and Rate Limiting
+
+JWT-based authentication for API
+
+Role-based access control
+
+Rate limit survey responses per IP/user
+
+Protect against abuse (spam, bots, etc.)
+
+Use HttpOnly cookies or secure token flow
+
+-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----
+
+API Design
+
+
+User Authentication Apis
+
+/post login
+/post signup
+/post refresh
+/post attemptSurvey
+
+
+Organization APIs
+
+/post createOrganization
+/post createSurvey
+/get listAllSurvey
+/delete deleteSurvey
+/post publishSurvey
+/patch draftSurvey
+/patch archiveSurvey
+
+Analytics APIs
+
+/get surveyAnalytics
+
+
+
+Tables
+
+Roles
+
+Admin
+Editor
+Viewer
+
+
+Organization
+
+name  (varchar)
+email (varchar)
+channel_id (int)  channel_id denotes organization id
+
+
+User
+
+email (varchar)
+mobile_no (int)
+role (fk Roles)
+channel_id (int)
+is_anonymous (bool)
+
+
+SurveyStatus
+
+Draft
+Published
+Closed
+Deleted
+
+
+Survey
+
+title (varchar)  
+description (varchar)
+status (fk SurveyStatus)
+allow_anonymous (bool)
+allow_multiple_responses (bool)
+start_time (datetime)
+end_time (datetime)
+channel_id (int)
+
+
+ChoiceType
+
+SingleChoice
+MultipleChoice
+Text
+Rating
+DropDown
+
+
+Question
+
+choice (fk ChoiceType)
+option_list (ArrayField)
+text [if it is a text question] (varchar)
+is_active (bool)
+
+
+SurveyQuestionMapping
+
+survey_id (fk Survey)
+question_id (fk Question)
+is_active (bool)
+
+
+UserQuestionMapping
+
+user_id (fk User)
+question_id (fk Question)
+option_selected (ArrayField)
+text_written (varchar)
+attempted_date (dateTimeField)
+
+We can also make a Response and Answer Table to help aggregate the Answers.
+
+
+################################################################################################################################################################
+
+5) Design a simplified file upload system (like Google Drive) that allows users to upload very large files (e.g., 100 GB) over an unstable 10 Mbps connection.
+
+Your system should support:
+
+Resumable uploads (file upload shouldn't restart from 0 if connection drops)
+
+Chunked file uploads (break into manageable parts)
+
+Concurrent chunk uploads for performance
+
+File deduplication if possible
+
+Upload progress tracking (frontend and backend)
+
+Let's start with:
+
+How would you design the API and logic for uploading such large files?
+
+What happens when the connection breaks mid-upload?
+
+How would you track and resume partial uploads?
+
+What would your data model and storage layer look like?
+
+
+-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----
+
+
+1. File Chunking
+On the client, split the file into chunks (e.g., 5–10 MB each)
+
+Each chunk is uploaded via a separate API call:
+
+http
+Copy
+Edit
+POST /upload-chunk
+Headers:
+  File-ID, Chunk-Number, Total-Chunks
+Body:
+  Binary content
+2. Initiate Upload Session
+First call from client:
+
+http
+Copy
+Edit
+POST /initiate-upload
+Body: { filename, size, checksum, totalChunks }
+Server generates a file_id and stores metadata in a DB table like:
+
+sql
+Copy
+Edit
+UploadSession (
+  file_id (UUID),
+  user_id,
+  filename,
+  total_chunks,
+  uploaded_chunks,
+  is_complete (bool),
+  created_at,
+  updated_at
+)
+3. Resumable Upload
+The frontend should store file_id in localStorage
+
+When the user resumes, it calls:
+
+http
+Copy
+Edit
+GET /upload-status?file_id=<file_id>
+=> returns list of uploaded chunk numbers
+Frontend then re-uploads only missing chunks
+
+4. Assembling the File
+After all chunks are uploaded, a final call:
+
+http
+Copy
+Edit
+POST /complete-upload
+Body: { file_id }
+Server merges chunks (e.g., stored temporarily on disk or S3) into the final file and marks is_complete = true
+
+5. Error Handling + Unstable Network
+Chunks are retried with exponential backoff
+
+Use checksums (e.g., MD5/SHA256) per chunk to verify upload integrity
+
+Support concurrent chunk uploads (parallelism improves speed)
+
+6. Storage Options
+Temporary chunk storage:
+
+Disk (e.g., /tmp/uploads/<file_id>/<chunk_number>)
+
+Or S3 with multi-part upload API (recommended in prod)
+
+Final file stored in:
+
+Object storage (S3, GCS)
+
+DB only for metadata
+
+7. Bonus: Progress & Status Tracking
+GET /upload-progress?file_id=<file_id>
+→ returns percentage complete, uploaded chunks, etc.
+
+
+################################################################################################################################################################
+
+6) Design cricBuzz HLD 
+
+🎯 Functional Requirements
+
+	Live Match Coverage
+
+	Ball-by-ball updates
+
+	Scoreboard
+
+	Commentary
+
+	Match Listings
+
+	Ongoing, upcoming, and past matches
+
+	Player and Team Stats
+
+	News, Articles, and Videos
+
+	Push Notifications (live score, breaking news)
+
+	User Management
+
+	Authentication (optional)
+
+	Preferences (favorite teams/players)
+
+
+
+Match Table
+
+id
+venue
+status
+start_time
+expected_end_time
+
+MatchParticipantMapping
+
+id
+match_id
+participant_id
+run_taken
+wickets
+wickets_taken
+balls_bowled
+overs_bowled
+
+
+Participant
+
+id
+name
+email
+total_run_taken
+total_wickets
+wickets_taken
+balls_bowled
+overs_bowled
+
+
+Commentary
+
+id
+match_id
+commentary_text
+
+
+Videos
+
+id
+url (Hosted on s3)
+
+
+News
+
+id
+news_text
+
+Article
+
+id
+article_text
+
+
+Team
+
+id INT PK,
+name TEXT,
+short_name TEXT
+
+
+MatchTeamMapping
+
+id INT PK,
+match_id INT FK,
+team_id INT FK,
+is_winner BOOLEAN
+
+
+
+
+
+
+
+
+
+
+
+
+
+
