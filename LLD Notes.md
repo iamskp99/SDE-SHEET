@@ -21,3 +21,7 @@ It states that a class should not be forced to implement interfaces it does not 
 
 It tells that abstraction or interface classes should be encouraged in the design instead of components.
 
+# Design Patterns
+
+1) Strategy Design Pattern 
+
