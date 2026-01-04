@@ -33,6 +33,55 @@ It tells that abstraction or interface classes should be encouraged in the desig
 
 3) Decorator Design Pattern (Structural Pattern)
 
+from abc import ABC
+# Decorator Design Pattern
+
+
+class Pizza(ABC):
+    def cost(self):
+        pass
+
+    def description(self):
+        pass
+
+
+class ToppingDecorator(Pizza):
+    def __init__(self, pizza):
+        self._pizza = pizza
+
+    def cost(self):
+        pass
+
+    def description(self):
+        pass
+
+
+class Margerita(Pizza):
+    def __init__(self,c,d):
+        self.c = c
+        self.d = d
+
+    def cost(self):
+        return self.c
+
+    def description(self):
+        return self.d
+
+
+class OliveTopping(ToppingDecorator):
+    def cost(self):
+        return self._pizza.cost()+10
+
+    def description(self):
+        return self._pizza.description() + " With Olive"
+
+pizza = Margerita(1,"Margerita")
+print(pizza.cost(),pizza.description())
+pizza = OliveTopping(pizza)
+print(pizza.cost(),pizza.description())
+
+# 1 Margerita
+# 11 Margerita With Olive
 
 
 
