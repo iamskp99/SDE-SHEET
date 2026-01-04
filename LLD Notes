@@ -19,5 +19,5 @@ It states that a class should not be forced to implement interfaces it does not 
 
 5) Dependency Inversion Principle
 
-It tells that abstraction or interface classes should be encouraged in the design instead of 
+It tells that abstraction or interface classes should be encouraged in the design instead of components.
 
