@@ -23,5 +23,19 @@ It tells that abstraction or interface classes should be encouraged in the desig
 
 # Design Patterns
 
-1) Strategy Design Pattern 
+1) Strategy Design Pattern (Behavriol Pattern)
+
+<img width="1116" height="489" alt="Screenshot 2026-01-05 at 12 25 50 AM" src="https://github.com/user-attachments/assets/f549f08c-cee8-4415-a39a-e2972cb19847" />
+
+2) Observer Pattern (Behavriol Pattern)
+
+<img width="1188" height="593" alt="Screenshot 2026-01-05 at 12 40 48 AM" src="https://github.com/user-attachments/assets/ee787f53-a7b3-4bea-9ae3-2c6eca02db73" />
+
+3) Decorator Design Pattern (Structural Pattern)
+
+
+
+
+
+
 
