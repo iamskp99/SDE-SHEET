@@ -1,0 +1,23 @@
+# SOLID Principles
+
+1) Single Responsibility Principle
+
+This principle tells us that every module should have only one responsibility. For example. if we make a single class that handles all the functionality then that will make our changes tedious. So, its better to seperate components.
+And make the functionality such that every seperated componenet can be merged via code.
+
+2) Open/Closed Principle
+
+This principle tells us that , every module should be open for extenstion but their code should not be modified. Like, the designing should be done in such a way that it follows this principle.
+
+3) Liskov's substitution Principle
+
+It suggests that wherever Parents classes are being used as a type decleration , we can substitute them with their child class and nothing in the functionality should break.
+
+4) Interface segregation Principle
+
+It states that a class should not be forced to implement interfaces it does not use. Instead of creating a large, all-encompassing interface, break it into smaller, more specific ones to keep implementations lean and focused.
+
+5) Dependency Inversion Principle
+
+It tells that abstraction or interface classes should be encouraged in the design instead of 
+
