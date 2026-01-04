@@ -33,6 +33,7 @@ It tells that abstraction or interface classes should be encouraged in the desig
 
 3) Decorator Design Pattern (Structural Pattern)
 
+```
 from abc import ABC
 # Decorator Design Pattern
 
@@ -83,7 +84,7 @@ print(pizza.cost(),pizza.description())
 # 1 Margerita
 # 11 Margerita With Olive
 
-
+```
 
 
 
