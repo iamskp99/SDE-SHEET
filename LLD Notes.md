@@ -86,6 +86,34 @@ print(pizza.cost(),pizza.description())
 
 ```
 
+4) Factory Method Pattern (Creational Design Pattern)
+
+Used when we want to encapsulate object creation and related creation logic at one place.
+
+There are two types:
+
+a) Simple Factory Pattern
+
+<img width="721" height="536" alt="Screenshot 2026-01-06 at 12 41 38 AM" src="https://github.com/user-attachments/assets/3f5eefca-5dd1-4db5-ae4f-d65f51c241a8" />
+<img width="532" height="552" alt="Screenshot 2026-01-06 at 12 41 26 AM" src="https://github.com/user-attachments/assets/5f0af34d-15a5-4dfe-8e4c-06559ac9b2c7" />
+
+
+As you can see, if we have to add new shape creation then we will have to change ShapeFactory therefore it violates Open/Closed Principle.
+Also if the creation logic contains multiple steps then it will violate Single Responsibility Principle.
+
+
+b) Factory Method Pattern
+
+<img width="557" height="471" alt="Screenshot 2026-01-06 at 12 46 45 AM" src="https://github.com/user-attachments/assets/900166db-231e-433c-b52d-7f9f7bc498b6" />
+
+<img width="702" height="520" alt="Screenshot 2026-01-06 at 12 48 42 AM" src="https://github.com/user-attachments/assets/559b760a-4bea-4180-a7be-11597054b3b3" />
+
+<img width="786" height="520" alt="Screenshot 2026-01-06 at 1 06 36 AM" src="https://github.com/user-attachments/assets/aced60c9-1bf0-417e-b9dc-660053ea12a3" />
+
+It solves SRP violation.
+
+
+
 
 
 
