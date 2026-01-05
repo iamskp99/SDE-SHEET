@@ -112,6 +112,15 @@ b) Factory Method Pattern
 
 It solves SRP violation.
 
+5) Chain of Responsibility Design Pattern
+
+```
+
+
+
+
+
+```
 
 
 
