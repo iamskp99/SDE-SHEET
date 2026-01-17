@@ -85,7 +85,7 @@ class TokenBucketRateLimiter:
         self.bucket_cache[user_id] = (now, tokens - 1)
         return True
 
-# The following algorithm is not user based, it is used for
+# The following algorithm is not user based, it is used for traffic shaping
 
 # Leaky Bucket Algorithm
 
