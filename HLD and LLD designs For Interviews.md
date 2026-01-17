@@ -122,3 +122,19 @@ class LeakyBucketRateLimiter:
 ```
 
 We can use Redis Lua Scripts in Distributed Rate Limiting Envioronments.
+
+# Consistent Hashing
+
+To achieve horizontal scaling, it is important to distribute requests/data efficiently and evenly
+across servers. Consistent hashing is a commonly used technique to achieve this goal. 
+
+
+
+
+
+
+
+
+
+
+
