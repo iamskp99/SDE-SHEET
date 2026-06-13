@@ -113,7 +113,7 @@ b) Factory Method Pattern
 It solves SRP violation.
 
 
-*Give an example where it is actually solving something*
+### Give an example where it is actually solving something
 
 A good Factory Method example is one where:
 
