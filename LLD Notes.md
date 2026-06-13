@@ -112,6 +112,175 @@ b) Factory Method Pattern
 
 It solves SRP violation.
 
+
+*Give an example where it is actually solving something*
+
+A good Factory Method example is one where:
+
+1. The client should not know the concrete class.
+2. Object creation is non-trivial.
+3. New types can be added without modifying existing code.
+
+### Example: Payment Gateway Integration
+
+Suppose your e-commerce system supports multiple payment providers:
+
+* Stripe
+* Razorpay
+* PayPal
+
+#### Without Factory
+
+```python
+if provider == "stripe":
+    gateway = StripeGateway(api_key, timeout=5)
+elif provider == "paypal":
+    gateway = PayPalGateway(client_id, secret)
+elif provider == "razorpay":
+    gateway = RazorpayGateway(key, secret)
+
+gateway.pay(amount)
+```
+
+Problems:
+
+* Every place that creates a gateway needs this logic.
+* Adding a new provider requires modifying existing code everywhere.
+* Client is tightly coupled to concrete implementations.
+
+---
+
+### With Factory Method
+
+```python
+from abc import ABC, abstractmethod
+
+class PaymentGateway(ABC):
+    @abstractmethod
+    def pay(self, amount):
+        pass
+
+
+class StripeGateway(PaymentGateway):
+    def pay(self, amount):
+        print(f"Stripe payment: {amount}")
+
+
+class PayPalGateway(PaymentGateway):
+    def pay(self, amount):
+        print(f"PayPal payment: {amount}")
+```
+
+Factory:
+
+```python
+class PaymentCreator(ABC):
+    @abstractmethod
+    def create_gateway(self) -> PaymentGateway:
+        pass
+
+    def process_payment(self, amount):
+        gateway = self.create_gateway()
+        gateway.pay(amount)
+```
+
+Concrete creators:
+
+```python
+class StripeCreator(PaymentCreator):
+    def create_gateway(self):
+        return StripeGateway()
+
+
+class PayPalCreator(PaymentCreator):
+    def create_gateway(self):
+        return PayPalGateway()
+```
+
+Usage:
+
+```python
+creator = StripeCreator()
+creator.process_payment(1000)
+```
+
+---
+
+### Why is the creator useful here?
+
+Imagine tomorrow Stripe initialization becomes:
+
+```python
+StripeGateway(
+    api_key,
+    connection_pool,
+    retry_policy,
+    metrics_client
+)
+```
+
+The client code remains:
+
+```python
+creator.process_payment(1000)
+```
+
+All creation complexity is hidden inside the creator.
+
+---
+
+### An even better real-world example: Cloud Storage
+
+You are designing Google Drive-like storage.
+
+```python
+class Storage(ABC):
+    @abstractmethod
+    def upload(self, file):
+        pass
+```
+
+Implementations:
+
+```python
+S3Storage
+GCSStorage
+AzureBlobStorage
+```
+
+Factory:
+
+```python
+class StorageCreator(ABC):
+    @abstractmethod
+    def create_storage(self):
+        pass
+```
+
+Client:
+
+```python
+storage = creator.create_storage()
+storage.upload(file)
+```
+
+Now deployment configuration decides:
+
+```python
+AWSStorageCreator
+GCSStorageCreator
+AzureStorageCreator
+```
+
+The upload workflow stays unchanged.
+
+---
+
+For an SDE-2 interview, the strongest justification is:
+
+> Factory Method becomes valuable when object creation contains configuration, dependency wiring, validation, connection setup, caching, or provider-specific initialization. If creation is simply `return Circle(5)`, the factory adds little value and is mostly a teaching example. If creation involves constructing a Stripe client, Kafka producer, Redis client, S3 storage, etc., then the factory meaningfully separates creation from usage.
+
+
 5) Chain of Responsibility Design Pattern
 
 ```
